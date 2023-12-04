@@ -1,0 +1,6 @@
+films
+
+how often you watch films;
+whether you prefer reading a book or watching a film;
+what film you have seen recently, what is was about;
+what your attitude to different kinds of films is.

@@ -1,0 +1,671 @@
+/* Catppuccin Mocha */
+:root {
+  --bg: #1e1e2e;
+  --fg: #cdd6f4;
+
+  --primary: #b4befe;
+  --red: #f38ba8;
+
+  --task-underline-gradient: linear-gradient(to right, #f5e0dc, #f2cdcd, #f5c2e7, #cba6f7, #f38ba8, #eba0ac, #fab387, #f9e2af, #a6e3a1, #94e2d5, #89dceb, #74c7ec, #89b4fa, #b4befe);
+
+  --footer: #11111b;
+}
+
+html {
+  background: var(--bg);
+  color: var(--fg);
+}
+
+body {
+  font-family: "CeraRound", sans-serif;
+
+  min-height: 100%;
+
+  /* For link icon */
+  position: relative;
+}
+
+/* --- General visual improvements --- */
+
+* {
+  margin: 0;
+  padding: 0;
+
+  font-weight: 400; /* stackoverflow.com/a/28836962 */
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-y: overlay;
+}
+
+button {
+  cursor: pointer;
+}
+
+::selection {
+  background-color: var(--primary);
+  color: var(--bg);
+}
+
+button:focus, a:focus {
+  outline: 1px solid transparent;
+}
+
+/* --- Content positions on screen --- */
+
+a.logo {
+  position: absolute;
+  top: 3em;
+}
+
+a.link {
+  position: absolute;
+  bottom: 3em;
+}
+
+.center {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* --- Buttons --- */
+
+button.btn {
+  background: var(--primary);
+  color: var(--bg);
+
+  border: none;
+  border-radius: 10px;
+}
+
+button.ge-btn {
+  font-size: 2em;
+  margin: 1em !important;
+  padding: 1em;
+}
+
+button.med-btn {
+  font-size: 1.5em;
+  margin: 0.5em !important;
+  padding: 0.8em 1em;
+}
+
+button.full-variant-btn {
+  grid-area: full;
+}
+
+/* TODO: remove after EGE is done */
+button.unavailable {
+  background: #9399b2;
+  pointer-events: none;
+}
+
+/* --- Grids --- */
+
+div.task-grid {
+  display: grid;
+  grid-template-areas:
+    "full full full full"
+    "task task task task";
+}
+
+div.var-grid {
+	display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-items: stretch;
+  margin: 10em 0;
+}
+
+/* --- Texts --- */
+
+/* For mobile */
+@media (max-width: 768px) {
+  p {
+    font-size: 1.5em;
+  }
+}
+
+/* For desktop */
+@media (min-width: 768px) {
+  p {
+    font-size: 2em;
+  }
+}
+
+p {
+  text-align: justify;
+}
+
+.task {
+  font-weight: bold;
+}
+
+#countdown {
+  font-size: 4em;
+  text-align: center;
+}
+
+/* --- Wrappers --- */
+
+/* For mobile */
+@media (max-width: 768px) {
+  .wrapper {
+    margin: 1em 1.5em;
+  }
+}
+
+/* For desktop */
+@media (min-width: 768px) {
+  .wrapper {
+    margin: 0 8em;
+  }
+}
+
+.icon-wrapper, .text-wrapper {
+  display: flex;
+  gap: 2em;
+}
+
+/* --- Task timer --- */
+
+.tt-countdown {
+  width: 2.7em;
+  order: 1;
+}
+
+.tt-recording {
+  color: var(--red);
+}
+
+.tt-title {
+  order: 2;
+}
+
+.icon-wrapper {
+  order: 3;
+}
+
+/* --- Other task elements --- */
+
+.task-line {
+  background-image: var(--task-underline-gradient);
+  height: 4px;
+  margin: 1em 0;
+}
+
+.questions {
+  margin: 2em 0;
+  margin-left: 1em;
+  font-size: 1.5em;
+}
+
+/* --- Task timer --- */
+
+/* For mobile */
+@media (max-width: 768px) {
+  #task-timer {
+    background: var(--footer);
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+
+    padding: 0.6em 0;
+  }
+
+  /* hack: fix text box */
+  #task-timer p {
+    height: 24px;
+  }
+
+  .wrapper.with-timer {
+    margin-bottom: 4em;
+  }
+
+  .tt-countdown {
+    margin-left: 1em;
+  }
+
+  .icon-wrapper {
+    margin-right: 1.5em;
+  }
+}
+
+/* For desktop */
+@media (min-width: 768px) {
+  #task-timer {
+    padding: 2em 2.5em;
+  }
+}
+
+#task-timer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#task-timer p {
+  font-weight: bold;
+}
+
+/* --- Icons --- */
+/* SVG to css background-image: https://www.svgbackgrounds.com/tools/svg-to-css/ */
+/* HEX to filter: https://codepen.io/sosuke/pen/Pjoqqp */
+
+.logo {
+  background-image: url('data:image/svg+xml,<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100%" viewBox="0 0 420 420" enable-background="new 0 0 420 420" xml:space="preserve"><path fill="currentColor" opacity="1.000000" stroke="currentColor" d="M324.000000,387.000000 C297.877441,387.000000 272.254852,387.000000 246.317871,387.000000 C246.317871,363.242218 246.317871,339.997986 246.317871,316.234985 C269.303894,316.234985 292.219330,316.234985 315.565491,316.234985 C315.565491,293.026184 315.565491,270.330444 315.565491,247.114639 C292.574219,247.114639 269.658478,247.114639 246.231262,247.114639 C246.231262,223.692352 246.231262,200.776855 246.231262,177.432648 C223.022461,177.432648 200.326736,177.432648 177.110962,177.432648 C177.110962,200.429520 177.110962,223.345276 177.110962,246.772430 C153.688232,246.772430 130.773071,246.772430 107.430817,246.772430 C107.430817,269.981323 107.430817,292.677032 107.430817,315.892731 C130.433456,315.892731 153.348846,315.892731 176.629349,315.892731 C176.629349,339.650330 176.629349,362.895264 176.629349,386.571014 C130.012299,386.571014 83.318100,386.571014 36.311951,386.571014 C36.311951,339.896973 36.311951,293.320496 36.311951,246.225952 C59.312805,246.225952 82.228546,246.225952 105.569992,246.225952 C105.569992,223.016983 105.569992,200.321289 105.569992,177.105637 C82.564857,177.105637 59.649544,177.105637 36.369843,177.105637 C36.369843,130.013763 36.369843,83.436920 36.369843,36.429573 C152.983002,36.429573 269.674530,36.429573 386.683289,36.429573 C386.683289,83.093430 386.683289,129.669907 386.683289,176.764496 C363.696655,176.764496 340.781189,176.764496 317.434784,176.764496 C317.434784,199.973236 317.434784,222.668991 317.434784,245.884796 C340.425262,245.884796 363.340881,245.884796 386.625366,245.884796 C386.625366,292.976593 386.625366,339.553467 386.625366,387.000000 C365.986206,387.000000 345.243103,387.000000 324.000000,387.000000 M123.501801,107.000000 C118.088974,107.000000 112.676140,107.000000 107.339554,107.000000 C107.339554,130.415375 107.339554,152.973450 107.339554,175.572235 C130.357452,175.572235 153.033157,175.572235 175.660583,175.572235 C175.660583,152.584824 175.660583,130.026810 175.660583,107.000000 C158.384033,107.000000 141.442688,107.000000 123.501801,107.000000 M257.526306,107.000000 C254.113815,107.000000 250.701340,107.000000 247.334259,107.000000 C247.334259,130.404114 247.334259,152.962372 247.334259,175.577026 C270.347046,175.577026 293.023010,175.577026 315.664856,175.577026 C315.664856,152.594254 315.664856,130.035919 315.664856,107.000000 C296.395752,107.000000 277.457947,107.000000 257.526306,107.000000 z"/></svg>');
+
+  width: 64px;
+  height: 64px;
+
+  /* #b4befe */
+  filter: invert(80%) sepia(54%) saturate(1631%) hue-rotate(189deg) brightness(101%) contrast(99%);
+}
+
+.link {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5.88401 18.6531C5.58404 18.4523 5.32587 18.1972 5.0239 17.8366C4.91473 17.7062 4.47283 17.1521 4.55811 17.258C4.09533 16.6831 3.80296 16.4168 3.50156 16.3087C2.9817 16.1223 2.7114 15.5497 2.89784 15.0298C3.08428 14.51 3.65685 14.2397 4.17672 14.4261C4.92936 14.696 5.43847 15.1609 6.12425 16.0141C6.03025 15.8972 6.46364 16.4408 6.55731 16.5526C6.74784 16.7802 6.88732 16.918 6.99629 16.9909C7.20118 17.128 7.58451 17.1871 8.14709 17.1308C8.17065 16.7487 8.24136 16.378 8.34919 16.0355C5.38097 15.3101 3.70116 13.3949 3.70116 9.63947C3.70116 8.4006 4.0704 7.28368 4.75917 6.34756C4.5415 5.45368 4.57433 4.37259 5.06092 3.15611C5.1725 2.87715 5.40361 2.66314 5.69031 2.57328C5.77242 2.54949 5.81791 2.5389 5.89878 2.52648C6.70167 2.40319 7.83573 2.69681 9.31449 3.62311C10.181 3.41855 11.0885 3.31476 12.0012 3.31476C12.9129 3.31476 13.8196 3.41835 14.6854 3.62253C16.1619 2.68976 17.2986 2.39625 18.1072 2.52627C18.1919 2.53988 18.2645 2.55758 18.3249 2.57741C18.6059 2.66967 18.8316 2.88155 18.9414 3.15611C19.4279 4.37232 19.4608 5.45319 19.2433 6.34695C19.9342 7.28313 20.3012 8.39184 20.3012 9.63947C20.3012 13.3966 18.627 15.3046 15.6588 16.0318C15.7837 16.4467 15.8496 16.9103 15.8496 17.4118C15.8496 18.0763 15.8471 18.7108 15.8424 19.4223C15.8412 19.6124 15.8397 19.8156 15.8375 20.1279C16.2129 20.2107 16.5229 20.5074 16.6031 20.9086C16.7114 21.4502 16.3602 21.977 15.8186 22.0853C14.6794 22.3132 13.8353 21.5535 13.8353 20.5608C13.8353 20.4705 13.836 20.3414 13.8375 20.1142C13.8398 19.8012 13.8412 19.5987 13.8425 19.4092C13.8471 18.7017 13.8496 18.0714 13.8496 17.4118C13.8496 16.7145 13.6664 16.26 13.4237 16.0508C12.7627 15.481 13.0977 14.3971 13.965 14.2996C16.9314 13.9663 18.3012 12.8174 18.3012 9.63947C18.3012 8.68484 17.9893 7.89547 17.3881 7.23534C17.1301 6.95209 17.0567 6.54634 17.199 6.19062C17.3647 5.77639 17.4354 5.2336 17.2941 4.57678L17.2847 4.57944C16.7928 4.71861 16.1744 5.01956 15.4261 5.52826C15.182 5.69413 14.8772 5.74377 14.5932 5.66388C13.7729 5.43319 12.8913 5.31476 12.0012 5.31476C11.111 5.31476 10.2294 5.43319 9.40916 5.66388C9.12662 5.74335 8.82344 5.69468 8.57997 5.53077C7.8274 5.02414 7.2056 4.72355 6.71079 4.58352C6.56735 5.23672 6.63814 5.77758 6.80336 6.19062C6.94565 6.54634 6.87219 6.95209 6.61423 7.23534C6.01715 7.89096 5.70116 8.69352 5.70116 9.63947C5.70116 12.8114 7.07225 13.9681 10.023 14.2996C10.8883 14.3969 11.2246 15.4767 10.5675 16.048C10.3751 16.2153 10.1384 16.7799 10.1384 17.4118V20.5608C10.1384 21.5472 9.30356 22.2866 8.17878 22.0898C7.63476 21.9946 7.27093 21.4764 7.36613 20.9324C7.43827 20.5201 7.75331 20.2114 8.13841 20.1274V19.1379C7.22829 19.1991 6.47656 19.0496 5.88401 18.6531Z' fill='currentColor'%3E%3C/path%3E%3C/svg%3E");
+
+  width: 32px;
+  height: 32px;
+
+  /* #cdd6f4 */
+  filter: invert(85%) sepia(80%) saturate(534%) hue-rotate(178deg) brightness(100%) contrast(91%);
+}
+
+.link:hover {
+  /* #b4befe */
+  filter: invert(80%) sepia(54%) saturate(1631%) hue-rotate(189deg) brightness(101%) contrast(99%);
+}
+
+.pause {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM9 9H11V15H9V9ZM13 9H15V15H13V9Z'%3E%3C/path%3E%3C/svg%3E");
+
+  order: 2;
+
+  width: 2em;
+  height: 2em;
+
+  /* #cdd6f4 */
+  filter: invert(85%) sepia(80%) saturate(534%) hue-rotate(178deg) brightness(100%) contrast(91%);
+}
+
+.pause.paused {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM10.6219 8.41459L15.5008 11.6672C15.6846 11.7897 15.7343 12.0381 15.6117 12.2219C15.5824 12.2658 15.5447 12.3035 15.5008 12.3328L10.6219 15.5854C10.4381 15.708 10.1897 15.6583 10.0672 15.4745C10.0234 15.4088 10 15.3316 10 15.2526V8.74741C10 8.52649 10.1791 8.34741 10.4 8.34741C10.479 8.34741 10.5562 8.37078 10.6219 8.41459Z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+.skip {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 13.3332L2.77735 19.4816C2.54759 19.6348 2.23715 19.5727 2.08397 19.3429C2.02922 19.2608 2 19.1643 2 19.0656V4.93408C2 4.65794 2.22386 4.43408 2.5 4.43408C2.59871 4.43408 2.69522 4.4633 2.77735 4.51806L12 10.6665V4.93408C12 4.65794 12.2239 4.43408 12.5 4.43408C12.5987 4.43408 12.6952 4.4633 12.7774 4.51806L23.376 11.5838C23.6057 11.737 23.6678 12.0474 23.5146 12.2772C23.478 12.3321 23.4309 12.3792 23.376 12.4158L12.7774 19.4816C12.5476 19.6348 12.2372 19.5727 12.084 19.3429C12.0292 19.2608 12 19.1643 12 19.0656V13.3332ZM10.3944 11.9998L4 7.73686V16.2628L10.3944 11.9998ZM14 7.73686V16.2628L20.3944 11.9998L14 7.73686Z'%3E%3C/path%3E%3C/svg%3E");
+
+  order: -1;
+
+  width: 2em;
+  height: 2em;
+
+  /* #cdd6f4 */
+  filter: invert(85%) sepia(80%) saturate(534%) hue-rotate(178deg) brightness(100%) contrast(91%);
+}
+
+.download {
+  display: block;
+
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 19H21V21H3V19ZM13 13.1716L19.0711 7.1005L20.4853 8.51472L12 17L3.51472 8.51472L4.92893 7.1005L11 13.1716V2H13V13.1716Z'%3E%3C/path%3E%3C/svg%3E");
+
+  width: 4em;
+  height: 4em;
+
+  /* #cba6f7 */
+  filter: invert(66%) sepia(99%) saturate(553%) hue-rotate(202deg) brightness(100%) contrast(94%);
+}
+
+/*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
+
+/* Document
+   ========================================================================== */
+
+/**
+ * 1. Correct the line height in all browsers.
+ * 2. Prevent adjustments of font size after orientation changes in iOS.
+ */
+
+html {
+  line-height: 1.15; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+}
+
+/* Sections
+   ========================================================================== */
+
+/**
+ * Remove the margin in all browsers.
+ */
+
+body {
+  margin: 0;
+}
+
+/**
+ * Render the `main` element consistently in IE.
+ */
+
+main {
+  display: block;
+}
+
+/**
+ * Correct the font size and margin on `h1` elements within `section` and
+ * `article` contexts in Chrome, Firefox, and Safari.
+ */
+
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+
+/* Grouping content
+   ========================================================================== */
+
+/**
+ * 1. Add the correct box sizing in Firefox.
+ * 2. Show the overflow in Edge and IE.
+ */
+
+hr {
+  box-sizing: content-box; /* 1 */
+  height: 0; /* 1 */
+  overflow: visible; /* 2 */
+}
+
+/**
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
+
+pre {
+  font-family: monospace, monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/* Text-level semantics
+   ========================================================================== */
+
+/**
+ * Remove the gray background on active links in IE 10.
+ */
+
+a {
+  background-color: transparent;
+}
+
+/**
+ * 1. Remove the bottom border in Chrome 57-
+ * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.
+ */
+
+abbr[title] {
+  border-bottom: none; /* 1 */
+  text-decoration: underline; /* 2 */
+  text-decoration: underline dotted; /* 2 */
+}
+
+/**
+ * Add the correct font weight in Chrome, Edge, and Safari.
+ */
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/**
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
+
+code,
+kbd,
+samp {
+  font-family: monospace, monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/**
+ * Add the correct font size in all browsers.
+ */
+
+small {
+  font-size: 80%;
+}
+
+/**
+ * Prevent `sub` and `sup` elements from affecting the line height in
+ * all browsers.
+ */
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/* Embedded content
+   ========================================================================== */
+
+/**
+ * Remove the border on images inside links in IE 10.
+ */
+
+img {
+  border-style: none;
+}
+
+/* Forms
+   ========================================================================== */
+
+/**
+ * 1. Change the font styles in all browsers.
+ * 2. Remove the margin in Firefox and Safari.
+ */
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  line-height: 1.15; /* 1 */
+  margin: 0; /* 2 */
+}
+
+/**
+ * Show the overflow in IE.
+ * 1. Show the overflow in Edge.
+ */
+
+button,
+input { /* 1 */
+  overflow: visible;
+}
+
+/**
+ * Remove the inheritance of text transform in Edge, Firefox, and IE.
+ * 1. Remove the inheritance of text transform in Firefox.
+ */
+
+button,
+select { /* 1 */
+  text-transform: none;
+}
+
+/**
+ * Correct the inability to style clickable types in iOS and Safari.
+ */
+
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
+  -webkit-appearance: button;
+}
+
+/**
+ * Remove the inner border and padding in Firefox.
+ */
+
+button::-moz-focus-inner,
+[type="button"]::-moz-focus-inner,
+[type="reset"]::-moz-focus-inner,
+[type="submit"]::-moz-focus-inner {
+  border-style: none;
+  padding: 0;
+}
+
+/**
+ * Restore the focus styles unset by the previous rule.
+ */
+
+button:-moz-focusring,
+[type="button"]:-moz-focusring,
+[type="reset"]:-moz-focusring,
+[type="submit"]:-moz-focusring {
+  outline: 1px dotted ButtonText;
+}
+
+/**
+ * Correct the padding in Firefox.
+ */
+
+fieldset {
+  padding: 0.35em 0.75em 0.625em;
+}
+
+/**
+ * 1. Correct the text wrapping in Edge and IE.
+ * 2. Correct the color inheritance from `fieldset` elements in IE.
+ * 3. Remove the padding so developers are not caught out when they zero out
+ *    `fieldset` elements in all browsers.
+ */
+
+legend {
+  box-sizing: border-box; /* 1 */
+  color: inherit; /* 2 */
+  display: table; /* 1 */
+  max-width: 100%; /* 1 */
+  padding: 0; /* 3 */
+  white-space: normal; /* 1 */
+}
+
+/**
+ * Add the correct vertical alignment in Chrome, Firefox, and Opera.
+ */
+
+progress {
+  vertical-align: baseline;
+}
+
+/**
+ * Remove the default vertical scrollbar in IE 10+.
+ */
+
+textarea {
+  overflow: auto;
+}
+
+/**
+ * 1. Add the correct box sizing in IE 10.
+ * 2. Remove the padding in IE 10.
+ */
+
+[type="checkbox"],
+[type="radio"] {
+  box-sizing: border-box; /* 1 */
+  padding: 0; /* 2 */
+}
+
+/**
+ * Correct the cursor style of increment and decrement buttons in Chrome.
+ */
+
+[type="number"]::-webkit-inner-spin-button,
+[type="number"]::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/**
+ * 1. Correct the odd appearance in Chrome and Safari.
+ * 2. Correct the outline style in Safari.
+ */
+
+[type="search"] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/**
+ * Remove the inner padding in Chrome and Safari on macOS.
+ */
+
+[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/**
+ * 1. Correct the inability to style clickable types in iOS and Safari.
+ * 2. Change font properties to `inherit` in Safari.
+ */
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/* Interactive
+   ========================================================================== */
+
+/*
+ * Add the correct display in Edge, IE 10+, and Firefox.
+ */
+
+details {
+  display: block;
+}
+
+/*
+ * Add the correct display in all browsers.
+ */
+
+summary {
+  display: list-item;
+}
+
+/* Misc
+   ========================================================================== */
+
+/**
+ * Add the correct display in IE 10+.
+ */
+
+template {
+  display: none;
+}
+
+/**
+ * Add the correct display in IE 10.
+ */
+
+[hidden] {
+  display: none;
+}
