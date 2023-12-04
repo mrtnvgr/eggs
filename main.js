@@ -384,6 +384,20 @@ async function startTaskTimer(text, seconds) {
 
 	icon_wrapper.appendChild(skip);
 
+	// Create "repeat question" button
+	let repeat_existance = typeof _current_tts_sentence !== "undefined" && text == "Recording";
+	if (repeat_existance) {
+		var repeat = document.createElement("div");
+		repeat.className = "repeat";
+
+		repeat.addEventListener("click", () => {
+			repeat.disable = true;
+			repeat.classList.toggle("repeat-please");
+		});
+
+		icon_wrapper.appendChild(repeat);
+	}
+
 	// Add timer to task page wrapper
 	let wrapper = document.getElementById("task-wrapper");
 	wrapper.classList.toggle("with-timer");
@@ -403,12 +417,25 @@ async function startTaskTimer(text, seconds) {
 				j += 1;
 			}
 
+			if (repeat_existance && repeat.classList.contains("repeat-please")) {
+				i = seconds;
+
+				repeat.remove();
+				repeat.classList.remove("repeat-please");
+
+				togglePauseRecording();
+				await say(_current_tts_sentence);
+				togglePauseRecording();
+
+				break;
+			}
+
 			await sleep(0.1);
 		}
 	}
 
-	// Remove timer from task page
 	timer.remove();
+
 	wrapper.classList.toggle("with-timer");
 }
 
@@ -629,6 +656,7 @@ async function start_survey_task() {
 	await say(hello);
 
 	for (let sentence of sentences) {
+		window._current_tts_sentence = sentence;
 		await say(sentence);
 
 		startRecording();
@@ -638,7 +666,8 @@ async function start_survey_task() {
 
 	await say(goodbye);
 
-	// Remove self
+	delete window._current_tts_sentence;
+
 	survey.remove();
 }
 
@@ -666,7 +695,6 @@ async function start_monologue_task() {
 window.onload = function() {
 	initRecorder();
 
-	// Add listeners to ge buttons
 	document.getElementById("oge").addEventListener("click", select_ge);
 	document.getElementById("ege").addEventListener("click", select_ge);
 }
