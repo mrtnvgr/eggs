@@ -53,6 +53,14 @@ Number.prototype.toMMSS = function() {
 	return `${minutes}:${seconds}`;
 }
 
+// https://stackoverflow.com/a/53490958
+async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => ("00" + b.toString(16)).slice(-2)).join("");
+}
+
 // --- Main menu events ---
 
 async function select_ge(event) {
@@ -507,25 +515,10 @@ function togglePauseRecording() {
 // --- TTS ---
 
 async function say(text) {
-	let voice = "Amazon US English (Salli)";
-
-	let payload = {
-		voiceId: voice,
-		ssml: `<speak version="1.0" xml:lang="en-US">${text}</speak>`,
-	};
-
-	let request_voice = await fetch("https://support.readaloud.app/ttstool/createParts", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify([payload]),
-	});
-
-	let id = (await request_voice.json())[0]
-
-	let speech_url = `https://support.readaloud.app/ttstool/getParts?q=${id}`;
+	let text_hash = await sha256(text);
 
 	let audio = document.createElement("audio");
-	audio.src = speech_url;
+	audio.src = `audio/${text_hash}.mp3`;
 	audio.play();
 
 	// Await for audio to finish
@@ -694,6 +687,8 @@ async function start_monologue_task() {
 
 window.onload = function() {
 	initRecorder();
+
+	console.log(sha256("TEST"));
 
 	document.getElementById("oge").addEventListener("click", select_ge);
 	document.getElementById("ege").addEventListener("click", select_ge);

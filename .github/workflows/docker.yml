@@ -16,6 +16,34 @@ jobs:
           username: mrtnvgr
           password: ${{secrets.GITHUB_TOKEN}}
 
+      - name: Install python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+          architecture: x64
+
+      - name: Install dependencies
+        run: |
+          pip install --progress-bar off pyppeteer requests
+
+      - name: Cache headless chromium
+        id: cache-chromium
+        uses: actions/cache@v2
+        with:
+          path: ./local-chromium
+          key: chromium
+
+      - name: Install headless chromium
+        if: steps.cache-chromium.outputs.cache-hit != 'true'
+        env:
+          PYPPETEER_HOME: ./local-chromium
+        run: pyppeteer-install
+
+      - name: Generate TTS voice files
+        run: python generate_tts.py
+        env:
+          PYPPETEER_HOME: ./local-chromium
+
       - name: "Build"
         run: |
           docker build . --tag ghcr.io/mrtnvgr/eggs:latest
