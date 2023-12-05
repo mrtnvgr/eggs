@@ -5,7 +5,7 @@ import { downloadZip } from "https://cdn.jsdelivr.net/npm/client-zip/index.js";
 const OGE_1_HEADER = "Task 1. You are going to read the text aloud. You have 1.5 minutes to read text silently, and then be ready to read it aloud. Remember that you will not have more than 2 minutes for reading aloud.";
 
 const OGE_2_HEADER = "Task 2. You are going to take part in a telephone survey. You have to answer six questions. Give full answers to the questions. Remember that you have 40 seconds to answer each question.";
-const OGE_2_HELLO = (x, y) => `Hello! It's the electronic assistant of the ${x}. We kindly ask you to take part in our survey. We need to find out ${y}. Please answer six questions. The survey is anonymous - you don't have to give your name. So, let's get started.`;
+const OGE_2_HELLO = (x, y) => `Hello! It's the electronic assistant of the ${x}. We kindly ask you to take part in our survey.${y !== "NONE" ? ` We need to find out ${y} ` : " "}.Please answer six questions. The survey is anonymous - you don't have to give your name. So, let's get started.`};
 
 const OGE_3_HEADER = (x) => `You are going to give a talk about ${x}.\nYou will have to start in 1.5 minutes and will speak for not more than 2 minutes (10-12 sentences).`;
 const OGE_3_QUESTIONS_TITLE = "Remember to say:";
