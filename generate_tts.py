@@ -9,7 +9,7 @@ import glob
 
 chromium_path = subprocess.check_output(["which", "chromium"]).decode("utf-8").strip()
 
-OGE_2_HELLO = lambda x, y: f"Hello! It's the electronic assistant of the {x}. We kindly ask you to take part in our survey. We need to find out how {y}. Please answer six questions. The survey is anonymous - you don't have to give your name. So, let's get started."
+OGE_2_HELLO = lambda x, y: f"Hello! It's the electronic assistant of the {x}. We kindly ask you to take part in our survey. We need to find out {y}. Please answer six questions. The survey is anonymous - you don't have to give your name. So, let's get started."
 
 LOCALES = ["en-GB"]
 BLACKLIST = ["en-GB-MaisieNeural", "en-US-AnaNeural"]
