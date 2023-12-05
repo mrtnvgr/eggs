@@ -1,0 +1,9 @@
+new club "Home, sweet home"
+NONE
+
+Do you live in a house or in a flat?
+Have you got a room of your own?
+What do you like to do when you have to stay at home?
+How do you help your parents about the house?
+What do you like about the area you live in?
+Where would you like to live - in the city or in the country? Why?
