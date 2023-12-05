@@ -457,7 +457,7 @@ async function initRecorder() {
 		let audio_stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 		window._recorder = new MediaRecorder(audio_stream);
 	} catch (e) {
-		console.log(e);
+		console.error(e);
 		alert("Failed to get microphone permissions\nYour answers won't be recorded");
 		return;
 	}
@@ -687,8 +687,6 @@ async function start_monologue_task() {
 
 window.onload = function() {
 	initRecorder();
-
-	console.log(sha256("TEST"));
 
 	document.getElementById("oge").addEventListener("click", select_ge);
 	document.getElementById("ege").addEventListener("click", select_ge);
