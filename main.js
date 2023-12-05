@@ -64,6 +64,8 @@ async function sha256(message) {
 // --- Main menu events ---
 
 async function select_ge(event) {
+	initTTS();
+
 	// Get ge type
 	window.ge_type = event.target.id;
 
@@ -457,7 +459,7 @@ async function initRecorder() {
 		let audio_stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 		window._recorder = new MediaRecorder(audio_stream);
 	} catch (e) {
-		console.error(e);
+		console.error(`Failed to get microphone permissions: ${e}`);
 		alert("Failed to get microphone permissions\nYour answers won't be recorded");
 		return;
 	}
@@ -501,7 +503,7 @@ function stopRecording() {
 }
 
 function togglePauseRecording() {
-	if (typeof _recorder === "undefined") {
+	if (typeof _recorder === "undefined" || _recorder.state == "inactive") {
 		return;
 	}
 
@@ -514,16 +516,25 @@ function togglePauseRecording() {
 
 // --- TTS ---
 
+async function initTTS() {
+	window._tts_audio = document.createElement("audio");
+	_tts_audio.src = "silence.mp3";
+	_tts_audio.play().then(() => {
+		_tts_audio.currentTime = 0;
+		_tts_audio.pause();
+		_tts_audio.muted = false;
+	});
+}
+
 async function say(text) {
 	let text_hash = await sha256(text);
 
-	let audio = document.createElement("audio");
-	audio.src = `audio/${text_hash}.mp3`;
-	audio.play();
+	_tts_audio.src = `audio/${text_hash}.mp3`;
+	_tts_audio.play();
 
 	// Await for audio to finish
 	await new Promise((resolve) => {
-		audio.addEventListener("ended", resolve);
+		_tts_audio.addEventListener("ended", resolve);
 	})
 }
 
@@ -651,6 +662,7 @@ async function start_survey_task() {
 	for (let sentence of sentences) {
 		window._current_tts_sentence = sentence;
 		await say(sentence);
+		delete window._current_tts_sentence;
 
 		startRecording();
 		await startTaskTimer("Recording", 40);
@@ -658,8 +670,6 @@ async function start_survey_task() {
 	}
 
 	await say(goodbye);
-
-	delete window._current_tts_sentence;
 
 	survey.remove();
 }
