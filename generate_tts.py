@@ -1,15 +1,22 @@
 import asyncio
+
 from pyppeteer import launch
+from pyppeteer.errors import PageError
+
 import subprocess
 import os
+import glob
+
 import random
 import hashlib
 import requests
-import glob
+
 
 chromium_path = subprocess.check_output(["which", "chromium"]).decode("utf-8").strip()
 
-OGE_2_HELLO = lambda x, y: f"Hello! It's the electronic assistant of the {x}. We kindly ask you to take part in our survey.{f' We need to find out {y} ' if y != "NONE" else " "}.Please answer six questions. The survey is anonymous - you don't have to give your name. So, let's get started."
+def OGE_2_HELLO(x, y):
+    goal = f" We need to find out {y}. " if y != "NONE" else " "
+    return f"Hello! It's the electronic assistant of the {x}. We kindly ask you to take part in our survey.{goal}Please answer six questions. The survey is anonymous - you don't have to give your name. So, let's get started."
 
 LOCALES = ["en-GB"]
 BLACKLIST = ["en-GB-MaisieNeural", "en-US-AnaNeural"]
@@ -50,7 +57,7 @@ async def main():
         try:
             await page.goto("https://crikk.com/text-to-speech")
             break
-        except pyppeteer.errors.PageError:
+        except PageError:
             attempts -= 1
 
     os.mkdir("audio")
