@@ -1,0 +1,9 @@
+new health magazine "Healthy Lifestyle"
+We want to devote one of our issues to healthy eating habits
+
+How many meals do you have a day? Which meals do you have?
+Which meal is the most important of the day in your opinion?
+What do you eat for lunch in your school canteen?
+How do you feel about fast food?
+Do you think it is important for everyone to have good cooking skills?
+What would you recommend to a teenager to stay fit and healthy?

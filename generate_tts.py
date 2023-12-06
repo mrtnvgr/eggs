@@ -15,7 +15,7 @@ import requests
 chromium_path = subprocess.check_output(["which", "chromium"]).decode("utf-8").strip()
 
 def OGE_2_HELLO(x, y):
-    goal = f" We need to find out {y}. " if y != "NONE" else " "
+    goal = f" {y}. " if y != "NONE" else " "
     return f"Hello! It's the electronic assistant of the {x}. We kindly ask you to take part in our survey.{goal}Please answer six questions. The survey is anonymous - you don't have to give your name. So, let's get started."
 
 LOCALES = ["en-GB"]

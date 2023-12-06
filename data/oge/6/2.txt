@@ -1,5 +1,5 @@
 magazine "Modern Household Appliances"
-how students feel about household chores
+We need to find out how students feel about household chores
 
 What time do you usually come back from school?
 How much time does it take you to do your homework?
