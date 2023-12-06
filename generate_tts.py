@@ -62,16 +62,16 @@ async def main():
         except PageError:
             attempts -= 1
 
-    os.mkdir("audio")
+    os.mkdir(os.path.join("www", "audio"))
 
-    surveys = glob.glob("data/oge/*/2.txt")
+    surveys = glob.glob("www/data/oge/*/2.txt")
 
     current_voice = None
 
     for i, survey in enumerate(surveys):
         variant = str(i + 1)
 
-        text_path = os.path.join("data", "oge", variant, "2.txt")
+        text_path = os.path.join("www", "data", "oge", variant, "2.txt")
 
         text = open(text_path).read()
         sentences = [x for x in text.split("\n") if x]
@@ -89,7 +89,7 @@ async def main():
             url = await generate_speech(page, sentence)
 
             sentence_hash = hashlib.sha256(sentence.encode("utf-8")).hexdigest()
-            audio_path = os.path.join("audio", f"oge_{variant}_{sentence_hash}.mp3")
+            audio_path = os.path.join("www", "audio", f"oge_{variant}_{sentence_hash}.mp3")
 
             await asyncio.sleep(0.5)
             download_file(url, audio_path)

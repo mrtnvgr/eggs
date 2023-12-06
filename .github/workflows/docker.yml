@@ -44,21 +44,31 @@ jobs:
         env:
           PYPPETEER_HOME: ./local-chromium
 
-      - name: Build
-        run: |
-          docker build . --tag ghcr.io/mrtnvgr/eggs:latest
-
-      - name: Publish
-        run: |
-          docker push ghcr.io/mrtnvgr/eggs:latest
-
-      - name: Prepare for artifact
-        run: |
-          mv audio www/
-          cd www
-
       - name: Create artifact
         uses: actions/upload-artifact@v3
         with:
           name: built
-          path: "*"
+          path: |
+            www
+
+      - name: Build docker
+        run: |
+          docker build . --tag ghcr.io/mrtnvgr/eggs:latest
+
+      - name: Publish docker
+        run: |
+          docker push ghcr.io/mrtnvgr/eggs:latest
+
+      - name: Pack files
+        run: |
+          zip -r built.zip www
+
+      - name: Create a release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: ${{ github.ref_name }}
+          prerelease: true
+          title: "Auto-generated site files"
+          files: |
+            built.zip

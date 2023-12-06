@@ -543,6 +543,15 @@ async function say(text) {
 
 async function showDownloadPage() {
 	console.log(_recordings);
+
+	// TODO: https://github.com/Touffy/client-zip/issues/79
+	if (_recordings.length == 1) {
+		_recordings.push({ name: "ignore_me", input: "nothing" });
+		console.log(_recordings);
+	} else {
+		console.warn(_recordings.length, _recordings);
+	}
+
 	let blob = await downloadZip(_recordings).blob();
 	console.log(blob);
 
