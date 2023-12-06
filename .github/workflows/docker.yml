@@ -44,6 +44,15 @@ jobs:
         env:
           PYPPETEER_HOME: ./local-chromium
 
+      - name: Remove chromium
+        run: rm -rf ./local-chromium
+
+      - name: Create artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: built
+          path: "*"
+
       - name: "Build"
         run: |
           docker build . --tag ghcr.io/mrtnvgr/eggs:latest
