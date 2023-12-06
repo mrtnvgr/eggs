@@ -18,6 +18,8 @@ def OGE_2_HELLO(x, y):
     goal = f" {y}. " if y != "NONE" else " "
     return f"Hello! It's the electronic assistant of the {x}. We kindly ask you to take part in our survey.{goal}Please answer six questions. The survey is anonymous - you don't have to give your name. So, let's get started."
 
+OGE_2_GOODBYE = "That is the end of the survey. Thank you very much for your cooperation."
+
 LOCALES = ["en-GB"]
 BLACKLIST = ["en-GB-MaisieNeural", "en-US-AnaNeural"]
 
@@ -77,12 +79,12 @@ async def main():
         theme = sentences.pop(0)
         goal = sentences.pop(0)
 
-        hello = OGE_2_HELLO(theme, goal)
-        goodbye = sentences.pop()
+        sentences.append(OGE_2_HELLO(theme, goal))
+        sentences.append(OGE_2_GOODBYE)
 
         await select_random_voice(page, current_voice)
 
-        for sentence in [hello, goodbye] + sentences:
+        for sentence in sentences:
             await asyncio.sleep(0.5)
             url = await generate_speech(page, sentence)
 
