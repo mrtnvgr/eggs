@@ -44,14 +44,13 @@ jobs:
         env:
           PYPPETEER_HOME: ./local-chromium
 
-      - name: Remove chromium
-        run: rm -rf ./local-chromium
-
       - name: Create artifact
         uses: actions/upload-artifact@v2
         with:
           name: built
-          path: "*"
+          path: |
+            www/*
+            audio
 
       - name: "Build"
         run: |

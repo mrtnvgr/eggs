@@ -1,2 +1,3 @@
 FROM nginx:alpine
-COPY . /usr/share/nginx/html
+COPY www/* /usr/share/nginx/html/
+COPY audio/* /usr/share/nginx/html/
