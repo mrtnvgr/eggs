@@ -87,7 +87,7 @@ async def main():
             url = await generate_speech(page, sentence)
 
             sentence_hash = hashlib.sha256(sentence.encode("utf-8")).hexdigest()
-            audio_path = os.path.join("audio", f"{sentence_hash}.mp3")
+            audio_path = os.path.join("audio", f"oge_{variant}_{sentence_hash}.mp3")
 
             await asyncio.sleep(0.5)
             download_file(url, audio_path)

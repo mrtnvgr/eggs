@@ -529,7 +529,7 @@ async function initTTS() {
 async function say(text) {
 	let text_hash = await sha256(text);
 
-	_tts_audio.src = `audio/${text_hash}.mp3`;
+	_tts_audio.src = `audio/${ge_type}_${ge_variant}_${text_hash}.mp3`;
 	_tts_audio.play();
 
 	// Await for audio to finish
