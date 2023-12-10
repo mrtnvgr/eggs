@@ -19,6 +19,10 @@ const EGE_2_HEADER = "Task 2. Study the advertisment.";
 const EGE_2_TASK = (x) => `You are considering ${x} and you'd like to get more information. In 1.5 minutes you are to ask four direct questions to find out about the following:`;
 const EGE_2_FOOTER = "You have 20 seconds to ask each question.";
 
+const EGE_3_HEADER = "Task 3. You are going to give an interview. You have to answer five questions. Give full answers to the questions (2–3 sentences). Remember that you have 40 seconds to answer each question.";
+const EGE_3_HELLO = (x, y) => `Hello everyone! It's the ${x}. Our new guest today is a teenager from Russia and we are going to discuss ${y}. We'd like to know out guest's point of view on this issue. Please answer five questions. So, let's get started.`;
+const EGE_3_GOODBYE = "Thank you very much for your interview.";
+
 // --- Helper functions ---
 
 function disableElementsByClassName(className) {
@@ -263,7 +267,7 @@ function createSurveyPage() {
 
 	let task = document.createElement("p");
 	task.className = "task";
-	task.innerHTML = OGE_2_HEADER;
+	task.innerHTML = ge_type === "oge" ? OGE_2_HEADER : EGE_3_HEADER;
 	task_wrapper.appendChild(task);
 
 	switchBodyTo(survey_page);
@@ -672,7 +676,7 @@ async function start_task(task_number) {
 	} else if (task_number == 2) {
 		await choose(start_survey_task, start_research_task)();
 	} else if (task_number == 3) {
-		await choose(start_monologue_task, null)();
+		await choose(start_monologue_task, start_survey_task)();
 	}
 
 	// NOTE: для 2 и 4 ЕГЭ: await showTimerPage("Be ready for the answer", 5);
@@ -694,7 +698,10 @@ async function start_text_reading_task() {
 }
 
 async function start_survey_task() {
-	let text = await getFileContents(`${ge_type}/${ge_variant}/2.txt`);
+	let is_oge = ge_variant === "oge";
+
+	let file = is_oge ? "2.txt" : "3.txt";
+	let text = await getFileContents(`${ge_type}/${ge_variant}/${file}`);
 	let sentences = text.split("\n").filter(x => x);
 
 	let survey = createSurveyPage();
@@ -704,7 +711,8 @@ async function start_survey_task() {
 	let theme = sentences.shift();
 	let goal = sentences.shift();
 
-	let hello = OGE_2_HELLO(theme, goal);
+	let hello_func = is_oge ? OGE_2_HELLO : EGE_3_HELLO;
+	let hello = hello_func(theme, goal);
 
 	await say(hello);
 
@@ -718,7 +726,7 @@ async function start_survey_task() {
 		stopRecording();
 	}
 
-	await say(OGE_2_GOODBYE);
+	await say(is_oge ? OGE_2_GOODBYE : EGE_3_GOODBYE);
 
 	survey.remove();
 }
