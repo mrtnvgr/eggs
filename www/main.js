@@ -105,7 +105,7 @@ function createSelector() {
 
 	let link = document.createElement("a");
 	link.className = "link";
-	link.href = "https://github.com/mrtnvgr/trainoge";
+	link.href = "https://github.com/mrtnvgr/eggs";
 	selector.appendChild(link);
 
 	return selector;
