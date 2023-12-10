@@ -12,6 +12,9 @@ const OGE_3_HEADER = (x) => `You are going to give a talk about ${x}.\nYou will 
 const OGE_3_QUESTIONS_TITLE = "Remember to say:";
 const OGE_3_FOOTER = "You have to talk continuously.";
 
+
+const EGE_1_HEADER = "Task 1. Imagine that you are preparing a project with your friend. You have found some interesting material for the presentation and you want to read this text to your friend. You have 1.5 minutes to read the text silently, then be ready to read it out aloud. You will not have more than 1.5 minutes to read it.";
+
 // --- Helper functions ---
 
 function disableElementsByClassName(className) {
@@ -629,7 +632,7 @@ async function start_task(task_number) {
 		}
 	}
 
-	// NOTE: для 1, 2 и 4 ЕГЭ: await showTimerPage("Be ready for the answer", 5);
+	// NOTE: для 2 и 4 ЕГЭ: await showTimerPage("Be ready for the answer", 5);
 }
 
 async function start_text_reading_task() {
@@ -643,7 +646,7 @@ async function start_text_reading_task() {
 	await showTimerPage("Be ready for the answer", 5);
 
 	startRecording();
-	await startTaskTimer("Recording", 120);
+	await startTaskTimer("Recording", ge_variant === "oge" ? 120 : 90);
 	stopRecording();
 
 	// Remove self
