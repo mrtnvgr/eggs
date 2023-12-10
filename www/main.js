@@ -15,6 +15,10 @@ const OGE_3_FOOTER = "You have to talk continuously.";
 
 const EGE_1_HEADER = "Task 1. Imagine that you are preparing a project with your friend. You have found some interesting material for the presentation and you want to read this text to your friend. You have 1.5 minutes to read the text silently, then be ready to read it out aloud. You will not have more than 1.5 minutes to read it.";
 
+const EGE_2_HEADER = "Task 2. Study the advertisment.";
+const EGE_2_TASK = (x) => `You are considering ${x} and you'd like to get more information. In 1.5 minutes you are to ask four direct questions to find out about the following:`;
+const EGE_2_FOOTER = "You have 20 seconds to ask each question.";
+
 // --- Helper functions ---
 
 function disableElementsByClassName(className) {
@@ -220,7 +224,7 @@ function createTextReadingPage(text) {
 
 	let task = document.createElement("p");
 	task.className = "task";
-	task.innerHTML = OGE_1_HEADER;
+	task.innerHTML = ge_type === "oge" ? OGE_1_HEADER : EGE_1_HEADER;
 	task_wrapper.appendChild(task);
 
 	let line = document.createElement("div");
@@ -319,6 +323,55 @@ function createMonologuePage(topic, questions) {
 	switchBodyTo(monologue_page);
 
 	return monologue_page;
+}
+
+function createResearchPage(topic, questions) {
+	let research_page = document.createElement("body");
+
+	research_page.className = "center";
+	research_page.id = "task-page";
+
+	let wrapper = document.createElement("div");
+	wrapper.id = "task-wrapper";
+	wrapper.className = "wrapper";
+	research_page.appendChild(wrapper);
+
+	let task_wrapper = document.createElement("div");
+	task_wrapper.className = "task-wrapper";
+	wrapper.appendChild(task_wrapper);
+
+	let header_task = document.createElement("p");
+	header_task.className = "task";
+	header_task.innerHTML = EGE_2_HEADER;
+	task_wrapper.appendChild(header_task);
+
+	let task_line = document.createElement("div");
+	task_line.className = "task-line";
+	wrapper.appendChild(task_line);
+
+	let main_task = document.createElement("p");
+	main_task.className = "task";
+	main_task.innerHTML = EGE_2_TASK(topic);
+	wrapper.appendChild(main_task);
+
+	let question_list = document.createElement("ol");
+	question_list.className = "questions";
+	wrapper.appendChild(question_list);
+
+	for (let question of questions) {
+		let li = document.createElement("li");
+		li.innerHTML = question;
+		question_list.appendChild(li);
+	}
+
+	let footer = document.createElement("p");
+	footer.innerHTML = EGE_2_FOOTER;
+	footer.className = "task";
+	wrapper.appendChild(footer);
+
+	switchBodyTo(research_page);
+
+	return research_page;
 }
 
 // --- Timer page ---
@@ -548,13 +601,6 @@ async function showDownloadPage() {
 	console.log(_recordings);
 
 	// TODO: https://github.com/Touffy/client-zip/issues/79
-	if (_recordings.length == 1) {
-		_recordings.push({ name: "ignore_me", input: "nothing" });
-		console.log(_recordings);
-	} else {
-		console.warn(_recordings.length, _recordings);
-	}
-
 	let blob = await downloadZip(_recordings).blob();
 	console.log(blob);
 
@@ -619,26 +665,21 @@ async function start_ge(event) {
 async function start_task(task_number) {
 	console.log(`Starting task ${task_number}`);
 
-	// Первое задание одинаковое и в ОГЭ и в ЕГЭ
+	let choose = (x, y) => ge_variant === "oge" ? x : y;
+
 	if (task_number == 1) {
 		await start_text_reading_task();
-	}
-
-	if (ge_type === "oge") {
-		if (task_number == 2) {
-			await start_survey_task();
-		} else if (task_number == 3) {
-			await start_monologue_task();
-		}
+	} else if (task_number == 2) {
+		await choose(start_survey_task, start_research_task)();
+	} else if (task_number == 3) {
+		await choose(start_monologue_task, null)();
 	}
 
 	// NOTE: для 2 и 4 ЕГЭ: await showTimerPage("Be ready for the answer", 5);
 }
 
 async function start_text_reading_task() {
-	// Fetch task text
 	let text = await getFileContents(`${ge_type}/${ge_variant}/1.txt`);
-
 	let tr_page = createTextReadingPage(text);
 
 	await startTaskTimer("Preparation", 90);
@@ -649,15 +690,11 @@ async function start_text_reading_task() {
 	await startTaskTimer("Recording", ge_variant === "oge" ? 120 : 90);
 	stopRecording();
 
-	// Remove self
 	tr_page.remove();
 }
 
 async function start_survey_task() {
-	// Fetch task raw text
 	let text = await getFileContents(`${ge_type}/${ge_variant}/2.txt`);
-
-	// Get sentences and filter out empty lines
 	let sentences = text.split("\n").filter(x => x);
 
 	let survey = createSurveyPage();
@@ -703,6 +740,25 @@ async function start_monologue_task() {
 	stopRecording();
 
 	monologue.remove();
+}
+
+async function start_research_task() {
+	let text = await getFileContents(`${ge_type}/${ge_variant}/2.txt`);
+
+	let lines = text.split("\n").filter(x => x);
+	let topic = lines.shift();
+
+	let research = createResearchPage(topic, lines);
+
+	await startTaskTimer("Preparation", 90);
+
+	for (let i = 0; i < 4; i++) {
+		startRecording();
+		await startTaskTimer("Recording", 20);
+		stopRecording();
+	}
+
+	research.remove();
 }
 
 // --- Startup hook ---
