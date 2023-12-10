@@ -101,7 +101,6 @@ button.full-variant-btn {
   grid-area: full;
 }
 
-/* TODO: remove after EGE is done */
 button.unavailable {
   background: #9399b2;
   pointer-events: none;
