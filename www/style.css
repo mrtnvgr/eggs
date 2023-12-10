@@ -43,6 +43,10 @@ button {
   cursor: pointer;
 }
 
+ul, ol {
+  list-style-position: inside;
+}
+
 ::selection {
   background-color: var(--primary);
   color: var(--bg);
@@ -121,21 +125,8 @@ div.var-grid {
 
 /* --- Texts --- */
 
-/* For mobile */
-@media (max-width: 768px) {
-  p {
-    font-size: 1.5em;
-  }
-}
-
-/* For desktop */
-@media (min-width: 768px) {
-  p {
-    font-size: 2em;
-  }
-}
-
 p {
+  font-size: 1.5em;
   text-align: justify;
 }
 
@@ -198,7 +189,6 @@ p {
 
 .questions {
   margin: 2em 0;
-  margin-left: 1em;
   font-size: 1.5em;
 }
 
