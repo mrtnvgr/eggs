@@ -20,7 +20,7 @@ const EGE_2_TASK = (x) => `You are considering ${x} and you'd like to get more i
 const EGE_2_FOOTER = "You have 20 seconds to ask each question.";
 
 const EGE_3_HEADER = "Task 3. You are going to give an interview. You have to answer five questions. Give full answers to the questions (2–3 sentences). Remember that you have 40 seconds to answer each question.";
-const EGE_3_HELLO = (x, y) => `Hello everyone! It's the ${x}. Our new guest today is a teenager from Russia and we are going to discuss ${y}. We'd like to know out guest's point of view on this issue. Please answer five questions. So, let's get started.`;
+const EGE_3_HELLO = (x) => `Hello everyone! It's the "Teenagers Round the World" Channel. Our new guest today is a teenager from Russia and we are going to discuss ${x}. We'd like to know out guest's point of view on this issue. Please answer five questions. So, let's get started.`;
 const EGE_3_GOODBYE = "Thank you very much for your interview.";
 
 // --- Helper functions ---
@@ -727,13 +727,14 @@ async function start_survey_task() {
 
 	await startTaskTimer("Preparation", 20);
 
-	let theme = sentences.shift();
-	let goal = sentences.shift();
+	if (is_oge) {
+		let theme = sentences.shift();
+		let goal = sentences.shift();
 
-	let hello_func = is_oge ? OGE_2_HELLO : EGE_3_HELLO;
-	let hello = hello_func(theme, goal);
-
-	await say(hello);
+		await say(OGE_2_HELLO(theme, goal));
+	} else {
+		await say(EGE_3_HELLO(sentences.shift()));
+	}
 
 	for (let sentence of sentences) {
 		window._current_tts_sentence = sentence;

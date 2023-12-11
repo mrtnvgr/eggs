@@ -105,7 +105,7 @@ async def main():
 
     os.mkdir(os.path.join("www", "audio"))
 
-    # await generate_surveys(page, "oge", glob.glob("www/data/oge/*/2.txt"))
+    await generate_surveys(page, "oge", glob.glob("www/data/oge/*/2.txt"))
     await generate_surveys(page, "ege", glob.glob("www/data/ege/*/3.txt"))
 
     await browser.close()
