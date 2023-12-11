@@ -399,6 +399,8 @@ function createResearchPage(img_text, topic, questions) {
 		question_list.appendChild(li);
 	}
 
+	wrapper.appendChild(task_line);
+
 	let footer = document.createElement("p");
 	footer.innerHTML = EGE_2_FOOTER;
 	footer.className = "task";
@@ -457,7 +459,7 @@ function createProjectPage(topic, questions) {
 	footer_wrapper.appendChild(footer_sentence);
 
 	let imgs_wrapper = document.createElement("div");
-	imgs_wrapper.className = "images-wrapper";
+	imgs_wrapper.className = "images-wrapper two-images-wrapper";
 	wrapper.appendChild(imgs_wrapper);
 
 	for (let i = 1; i <= EGE_4_IMG_COUNT; i++) {

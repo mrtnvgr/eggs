@@ -195,15 +195,15 @@ p {
 
 .images-wrapper {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   flex-direction: row;
 
   margin: 3em;
 }
 
-.image-wrapper {
-  flex-direction: column;
+.two-images-wrapper {
+  justify-content: space-between;
 }
 
 .image-text {
@@ -212,9 +212,20 @@ p {
   font-weight: bold;
 }
 
-.task-image {
-  width: 15em;
-  height: 10em;
+/* For mobile */
+@media (max-width: 768px) {
+  .task-image {
+    width: 200px;
+    height: 150px;
+  }
+}
+
+/* For desktop */
+@media (min-width: 768px) {
+  .task-image {
+    width: 400px;
+    height: 250px;
+  }
 }
 
 /* --- Task timer --- */
