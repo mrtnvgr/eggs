@@ -329,7 +329,7 @@ function createMonologuePage(topic, questions) {
 	return monologue_page;
 }
 
-function createResearchPage(topic, questions) {
+function createResearchPage(img_text, topic, questions) {
 	let research_page = document.createElement("body");
 
 	research_page.className = "center";
@@ -352,6 +352,18 @@ function createResearchPage(topic, questions) {
 	let task_line = document.createElement("div");
 	task_line.className = "task-line";
 	wrapper.appendChild(task_line);
+
+	let img_wrapper = document.createElement("div");
+	wrapper.appendChild(img_wrapper);
+
+	let image_p = document.createElement("p");
+	image_p.className = "image-text";
+	image_p.innerHTML = img_text;
+	img_wrapper.appendChild(image_p);
+
+	let image = document.createElement("image");
+	image.source = `data/ege/${ge_variant}/2.png`;
+	img_wrapper.appendChild(image);
 
 	let main_task = document.createElement("p");
 	main_task.className = "task";
@@ -754,9 +766,10 @@ async function start_research_task() {
 	let text = await getFileContents(`${ge_type}/${ge_variant}/2.txt`);
 
 	let lines = text.split("\n").filter(x => x);
+	let img_text = lines.shift();
 	let topic = lines.shift();
 
-	let research = createResearchPage(topic, lines);
+	let research = createResearchPage(img_text, topic, lines);
 
 	await startTaskTimer("Preparation", 90);
 

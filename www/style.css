@@ -191,6 +191,11 @@ p {
   font-size: 1.5em;
 }
 
+.image-text {
+  text-align: center;
+  font-weight: bold;
+}
+
 /* --- Task timer --- */
 
 /* For mobile */
