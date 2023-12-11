@@ -65,6 +65,11 @@ Number.prototype.toMMSS = function() {
 	return `${minutes}:${seconds}`;
 }
 
+// Split and filter out empty lines
+String.prototype.splitlines = function() {
+	return this.split(/\r?\n/).filter((x) => x);
+};
+
 // https://stackoverflow.com/a/53490958
 async function sha256(message) {
     const msgBuffer = new TextEncoder().encode(message);
@@ -354,6 +359,7 @@ function createResearchPage(img_text, topic, questions) {
 	wrapper.appendChild(task_line);
 
 	let img_wrapper = document.createElement("div");
+	img_wrapper.className = "image-wrapper";
 	wrapper.appendChild(img_wrapper);
 
 	let image_p = document.createElement("p");
@@ -361,8 +367,9 @@ function createResearchPage(img_text, topic, questions) {
 	image_p.innerHTML = img_text;
 	img_wrapper.appendChild(image_p);
 
-	let image = document.createElement("image");
-	image.source = `data/ege/${ge_variant}/2.png`;
+	let image = document.createElement("img");
+	image.className = "task-image";
+	image.src = `data/ege/${ge_variant}/2.png`;
 	img_wrapper.appendChild(image);
 
 	let main_task = document.createElement("p");
@@ -714,7 +721,7 @@ async function start_survey_task() {
 
 	let file = is_oge ? "2.txt" : "3.txt";
 	let text = await getFileContents(`${ge_type}/${ge_variant}/${file}`);
-	let sentences = text.split("\n").filter(x => x);
+	let sentences = text.splitlines();
 
 	let survey = createSurveyPage();
 
@@ -765,7 +772,7 @@ async function start_monologue_task() {
 async function start_research_task() {
 	let text = await getFileContents(`${ge_type}/${ge_variant}/2.txt`);
 
-	let lines = text.split("\n").filter(x => x);
+	let lines = text.splitlines();
 	let img_text = lines.shift();
 	let topic = lines.shift();
 

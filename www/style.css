@@ -191,9 +191,25 @@ p {
   font-size: 1.5em;
 }
 
+/* --- Task image --- */
+
+.image-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  margin: 3em 0;
+}
+
 .image-text {
-  text-align: center;
+  margin-bottom: 1em;
   font-weight: bold;
+}
+
+.task-image {
+  width: 400px;
+  height: 300px;
 }
 
 /* --- Task timer --- */
