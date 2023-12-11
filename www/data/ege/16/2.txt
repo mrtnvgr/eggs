@@ -1,0 +1,8 @@
+New Zealand's most amazing tour!
+
+You are going on a bus city tour
+
+starting point;
+price for one;
+number of stops;
+booking by phone.

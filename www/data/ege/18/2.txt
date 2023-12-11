@@ -1,0 +1,8 @@
+Rental boats are waiting for you!
+
+renting a boat to enjoy fishing
+
+location of rentals;
+price per hour;
+documents needed;
+fishing equipment available.

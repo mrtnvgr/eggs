@@ -12,6 +12,25 @@ const OGE_3_HEADER = (x) => `You are going to give a talk about ${x}.\nYou will 
 const OGE_3_QUESTIONS_TITLE = "Remember to say:";
 const OGE_3_FOOTER = "You have to talk continuously.";
 
+
+const EGE_1_HEADER = "Task 1. Imagine that you are preparing a project with your friend. You have found some interesting material for the presentation and you want to read this text to your friend. You have 1.5 minutes to read the text silently, then be ready to read it out aloud. You will not have more than 1.5 minutes to read it.";
+
+const EGE_2_HEADER = "Task 2. Study the advertisment.";
+const EGE_2_TASK = (x) => `You are considering ${x} and you'd like to get more information. In 1.5 minutes you are to ask four direct questions to find out about the following:`;
+const EGE_2_FOOTER = "You have 20 seconds to ask each question.";
+
+const EGE_3_HEADER = "Task 3. You are going to give an interview. You have to answer five questions. Give full answers to the questions (2–3 sentences). Remember that you have 40 seconds to answer each question.";
+const EGE_3_HELLO = (x) => `Hello everyone! It's the "Teenagers Round the World" Channel. Our new guest today is a teenager from Russia and we are going to discuss ${x}. We'd like to know out guest's point of view on this issue. Please answer five questions. So, let's get started.`;
+const EGE_3_GOODBYE = "Thank you very much for your interview.";
+
+const EGE_4_HEADER = (x) => `Task 4. Imagine that you and your friend are doing a school project “${x}”. You have found some photos to illustrate it but for technical reasons you cannot send them now. Leave a voice message to your friend explaining your choice of the photos and sharing some ideas about the project. In 2.5 minutes be ready to:`;
+const EGE_4_FIRST = "explain the choice of the illustrations for the project by briefly describing them and noting the differences;";
+const EGE_4_SECOND = (x) => `mention the advantages (1-2) of the ${x}`;
+const EGE_4_THIRD = (x) => `mention the disadvantages (1-2) of the ${x}`;
+const EGE_4_FOURTH = (x) => `explain your opinion on the subject of the project - ${x}`;
+const EGE_4_FOOTER = "You will speak for not more than 3 minutes (12-15 sentences). You have to talk continuously.";
+const EGE_4_IMG_COUNT = 2;
+
 // --- Helper functions ---
 
 function disableElementsByClassName(className) {
@@ -53,6 +72,11 @@ Number.prototype.toMMSS = function() {
 
 	return `${minutes}:${seconds}`;
 }
+
+// Split and filter out empty lines
+String.prototype.splitlines = function() {
+	return this.split(/\r?\n/).filter((x) => x);
+};
 
 // https://stackoverflow.com/a/53490958
 async function sha256(message) {
@@ -217,7 +241,7 @@ function createTextReadingPage(text) {
 
 	let task = document.createElement("p");
 	task.className = "task";
-	task.innerHTML = OGE_1_HEADER;
+	task.innerHTML = ge_type === "oge" ? OGE_1_HEADER : EGE_1_HEADER;
 	task_wrapper.appendChild(task);
 
 	let line = document.createElement("div");
@@ -256,7 +280,7 @@ function createSurveyPage() {
 
 	let task = document.createElement("p");
 	task.className = "task";
-	task.innerHTML = OGE_2_HEADER;
+	task.innerHTML = ge_type === "oge" ? OGE_2_HEADER : EGE_3_HEADER;
 	task_wrapper.appendChild(task);
 
 	switchBodyTo(survey_page);
@@ -316,6 +340,147 @@ function createMonologuePage(topic, questions) {
 	switchBodyTo(monologue_page);
 
 	return monologue_page;
+}
+
+function createResearchPage(img_text, topic, questions) {
+	let research_page = document.createElement("body");
+
+	research_page.className = "center";
+	research_page.id = "task-page";
+
+	let wrapper = document.createElement("div");
+	wrapper.id = "task-wrapper";
+	wrapper.className = "wrapper";
+	research_page.appendChild(wrapper);
+
+	let task_wrapper = document.createElement("div");
+	task_wrapper.className = "task-wrapper";
+	wrapper.appendChild(task_wrapper);
+
+	let header_task = document.createElement("p");
+	header_task.className = "task";
+	header_task.innerHTML = EGE_2_HEADER;
+	task_wrapper.appendChild(header_task);
+
+	let task_line = document.createElement("div");
+	task_line.className = "task-line";
+	wrapper.appendChild(task_line);
+
+	let imgs_wrapper = document.createElement("div");
+	imgs_wrapper.className = "images-wrapper";
+	wrapper.appendChild(imgs_wrapper);
+
+	let img_wrapper = document.createElement("div");
+	img_wrapper.className = "image-wrapper";
+	imgs_wrapper.appendChild(img_wrapper);
+
+	let image_p = document.createElement("p");
+	image_p.className = "image-text";
+	image_p.innerHTML = img_text;
+	img_wrapper.appendChild(image_p);
+
+	let image = document.createElement("img");
+	image.className = "task-image";
+	image.src = `data/ege/${ge_variant}/2.png`;
+	img_wrapper.appendChild(image);
+
+	let main_task = document.createElement("p");
+	main_task.className = "task";
+	main_task.innerHTML = EGE_2_TASK(topic);
+	wrapper.appendChild(main_task);
+
+	let question_list = document.createElement("ol");
+	question_list.className = "questions";
+	wrapper.appendChild(question_list);
+
+	for (let question of questions) {
+		let li = document.createElement("li");
+		li.innerHTML = question;
+		question_list.appendChild(li);
+	}
+
+	wrapper.appendChild(task_line);
+
+	let footer = document.createElement("p");
+	footer.innerHTML = EGE_2_FOOTER;
+	footer.className = "task";
+	wrapper.appendChild(footer);
+
+	switchBodyTo(research_page);
+
+	return research_page;
+}
+
+function createProjectPage(topic, questions) {
+	let project_page = document.createElement("body");
+
+	project_page.className = "center";
+	project_page.id = "task-page";
+
+	let wrapper = document.createElement("div");
+	wrapper.id = "task-wrapper";
+	wrapper.className = "wrapper";
+	project_page.appendChild(wrapper);
+
+	let task_wrapper = document.createElement("div");
+	task_wrapper.className = "task-wrapper";
+	wrapper.appendChild(task_wrapper);
+
+	let task = document.createElement("p");
+	task.className = "task";
+	task.innerHTML = EGE_4_HEADER(topic);
+	task_wrapper.appendChild(task);
+
+	let header_line = document.createElement("div");
+	header_line.className = "task-line";
+	wrapper.appendChild(header_line);
+
+	let question_list = document.createElement("ul");
+	question_list.className = "questions";
+	wrapper.appendChild(question_list);
+
+	for (let question of questions) {
+		let li = document.createElement("li");
+		li.innerHTML = question;
+		question_list.appendChild(li);
+	}
+
+	let footer_line = document.createElement("div");
+	footer_line.className = "task-line";
+	wrapper.appendChild(footer_line);
+
+	let footer_wrapper = document.createElement("div");
+	footer_wrapper.className = "task-wrapper";
+	wrapper.appendChild(footer_wrapper);
+
+	let footer_sentence = document.createElement("p");
+	footer_sentence.className = "task";
+	footer_sentence.innerHTML = EGE_4_FOOTER;
+	footer_wrapper.appendChild(footer_sentence);
+
+	let imgs_wrapper = document.createElement("div");
+	imgs_wrapper.className = "images-wrapper two-images-wrapper";
+	wrapper.appendChild(imgs_wrapper);
+
+	for (let i = 1; i <= EGE_4_IMG_COUNT; i++) {
+		let img_wrapper = document.createElement("div");
+		img_wrapper.className = "image-wrapper";
+		imgs_wrapper.appendChild(img_wrapper);
+
+		let image_p = document.createElement("p");
+		image_p.className = "image-text";
+		image_p.innerHTML = `Picture ${i}`;
+		img_wrapper.appendChild(image_p);
+
+		let image = document.createElement("img");
+		image.className = "task-image";
+		image.src = `data/ege/${ge_variant}/4_${i}.png`;
+		img_wrapper.appendChild(image);
+	}
+
+	switchBodyTo(project_page);
+
+	return project_page;
 }
 
 // --- Timer page ---
@@ -545,13 +710,6 @@ async function showDownloadPage() {
 	console.log(_recordings);
 
 	// TODO: https://github.com/Touffy/client-zip/issues/79
-	if (_recordings.length == 1) {
-		_recordings.push({ name: "ignore_me", input: "nothing" });
-		console.log(_recordings);
-	} else {
-		console.warn(_recordings.length, _recordings);
-	}
-
 	let blob = await downloadZip(_recordings).blob();
 	console.log(blob);
 
@@ -616,26 +774,21 @@ async function start_ge(event) {
 async function start_task(task_number) {
 	console.log(`Starting task ${task_number}`);
 
-	// Первое задание одинаковое и в ОГЭ и в ЕГЭ
+	let choose = (x, y) => ge_variant === "oge" ? x : y;
+
 	if (task_number == 1) {
 		await start_text_reading_task();
+	} else if (task_number == 2) {
+		await choose(start_survey_task, start_research_task)();
+	} else if (task_number == 3) {
+		await choose(start_monologue_task, start_survey_task)();
+	} else if (task_number == 4) {
+		await start_project_task();
 	}
-
-	if (ge_type === "oge") {
-		if (task_number == 2) {
-			await start_survey_task();
-		} else if (task_number == 3) {
-			await start_monologue_task();
-		}
-	}
-
-	// NOTE: для 1, 2 и 4 ЕГЭ: await showTimerPage("Be ready for the answer", 5);
 }
 
 async function start_text_reading_task() {
-	// Fetch task text
 	let text = await getFileContents(`${ge_type}/${ge_variant}/1.txt`);
-
 	let tr_page = createTextReadingPage(text);
 
 	await startTaskTimer("Preparation", 90);
@@ -643,30 +796,31 @@ async function start_text_reading_task() {
 	await showTimerPage("Be ready for the answer", 5);
 
 	startRecording();
-	await startTaskTimer("Recording", 120);
+	await startTaskTimer("Recording", ge_variant === "oge" ? 120 : 90);
 	stopRecording();
 
-	// Remove self
 	tr_page.remove();
 }
 
 async function start_survey_task() {
-	// Fetch task raw text
-	let text = await getFileContents(`${ge_type}/${ge_variant}/2.txt`);
+	let is_oge = ge_variant === "oge";
 
-	// Get sentences and filter out empty lines
-	let sentences = text.split("\n").filter(x => x);
+	let file = is_oge ? "2.txt" : "3.txt";
+	let text = await getFileContents(`${ge_type}/${ge_variant}/${file}`);
+	let sentences = text.splitlines();
 
 	let survey = createSurveyPage();
 
 	await startTaskTimer("Preparation", 20);
 
-	let theme = sentences.shift();
-	let goal = sentences.shift();
+	if (is_oge) {
+		let theme = sentences.shift();
+		let goal = sentences.shift();
 
-	let hello = OGE_2_HELLO(theme, goal);
-
-	await say(hello);
+		await say(OGE_2_HELLO(theme, goal));
+	} else {
+		await say(EGE_3_HELLO(sentences.shift()));
+	}
 
 	for (let sentence of sentences) {
 		window._current_tts_sentence = sentence;
@@ -678,14 +832,14 @@ async function start_survey_task() {
 		stopRecording();
 	}
 
-	await say(OGE_2_GOODBYE);
+	await say(is_oge ? OGE_2_GOODBYE : EGE_3_GOODBYE);
 
 	survey.remove();
 }
 
 async function start_monologue_task() {
 	let raw = await getFileContents(`${ge_type}/${ge_variant}/3.txt`);
-	let questions = raw.split("\n").filter(x => x);
+	let questions = raw.splitlines();
 
 	let topic = questions.shift();
 
@@ -700,6 +854,53 @@ async function start_monologue_task() {
 	stopRecording();
 
 	monologue.remove();
+}
+
+async function start_research_task() {
+	let text = await getFileContents(`${ge_type}/${ge_variant}/2.txt`);
+
+	let lines = text.splitlines();
+	let img_text = lines.shift();
+	let topic = lines.shift();
+
+	let research = createResearchPage(img_text, topic, lines);
+
+	await startTaskTimer("Preparation", 90);
+
+	await showTimerPage("Be ready for the answer", 5);
+
+	for (let i = 0; i < 4; i++) {
+		startRecording();
+		await startTaskTimer("Recording", 20);
+		stopRecording();
+	}
+
+	research.remove();
+}
+
+async function start_project_task() {
+	let raw = await getFileContents(`${ge_type}/${ge_variant}/4.txt`);
+	let lines = raw.splitlines();
+
+	let topic = lines.shift();
+
+	let questions = [];
+	questions.push(EGE_4_FIRST);
+	questions.push(EGE_4_SECOND(lines.shift()));
+	questions.push(EGE_4_THIRD(lines.shift()));
+	questions.push(EGE_4_FOURTH(lines.shift()));
+
+	let project = createProjectPage(topic, questions);
+
+	await startTaskTimer("Preparation", 150);
+
+	await showTimerPage("Be ready for the answer", 5);
+
+	startRecording();
+	await startTaskTimer("Recording", 180);
+	stopRecording();
+
+	project.remove();
 }
 
 // --- Startup hook ---
