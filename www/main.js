@@ -633,26 +633,6 @@ async function initRecorder() {
 	_recorder.ondataavailable = (e) => {
 		_chunks.push(e.data);
 	};
-
-	_recorder.onstop = (e) => {
-		let blob = new Blob(_chunks);
-
-		let task_directory = `Task ${current_task}`;
-
-		let count = 0;
-		for (let recording of _recordings) {
-			if (recording.name.includes(task_directory)) {
-				count++;
-			}
-		}
-
-		_recordings.push({
-			name: `${task_directory}/${count+1}.webm`,
-			input: blob,
-		})
-
-		_chunks = [];
-	};
 }
 
 // Convenience wrappers with some checks
@@ -663,9 +643,29 @@ function startRecording() {
 }
 
 function stopRecording() {
-	if (typeof _recorder !== "undefined" && _recorder.state == "recording") {
-		_recorder.stop();
+	if (typeof _recorder === "undefined" || _recorder.state != "recording") {
+		return;
 	}
+
+	_recorder.stop();
+
+	let blob = new Blob(_chunks);
+
+	let task_directory = `Task ${current_task}`;
+
+	let count = 0;
+	for (let recording of _recordings) {
+		if (recording.name.includes(task_directory)) {
+			count++;
+		}
+	}
+
+	_recordings.push({
+		name: `${task_directory}/${count+1}.webm`,
+		input: blob,
+	})
+
+	_chunks = [];
 }
 
 function togglePauseRecording() {
