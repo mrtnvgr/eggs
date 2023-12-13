@@ -1,5 +1,15 @@
 import { downloadZip } from "https://cdn.jsdelivr.net/npm/client-zip/index.js";
 
+// MediaRecorder polyfill with MP3 support
+// https://github.com/ai/audio-recorder-polyfill
+import AudioRecorder from "https://cdn.jsdelivr.net/npm/audio-recorder-polyfill/index.js";
+
+import mpegEncoder from "https://cdn.jsdelivr.net/npm/audio-recorder-polyfill/mpeg-encoder/index.js";
+AudioRecorder.encoder = mpegEncoder;
+AudioRecorder.prototype.mimeType = "audio/mpeg";
+
+window.MediaRecorder = AudioRecorder;
+
 // --- Constants ---
 
 const OGE_1_HEADER = "Task 1. You are going to read the text aloud. You have 1.5 minutes to read text silently, and then be ready to read it aloud. Remember that you will not have more than 2 minutes for reading aloud.";
@@ -630,24 +640,34 @@ async function initRecorder() {
 		return;
 	}
 
-	_recorder.ondataavailable = (e) => {
+	// In polyfill constructor options are not supported
+	// and "dataavailable" is called only once
+	_recorder.addEventListener("dataavailable", (e) => {
 		_chunks.push(e.data);
-	};
+	});
+
+	_recorder.addEventListener("stop", (e) => _recorder.processed = true);
 }
 
 // Convenience wrappers with some checks
 function startRecording() {
 	if (typeof _recorder !== "undefined" && _recorder.state == "inactive") {
 		_recorder.start();
+		_recorder.processed = false;
 	}
 }
 
-function stopRecording() {
+async function stopRecording() {
 	if (typeof _recorder === "undefined" || _recorder.state != "recording") {
 		return;
 	}
 
 	_recorder.stop();
+
+	// In polyfill recorder stop is not blocking, so wait until processing is done
+	while (_recorder.processed != true) {
+		await sleep(0.1);
+	}
 
 	let blob = new Blob(_chunks);
 
@@ -661,7 +681,7 @@ function stopRecording() {
 	}
 
 	_recordings.push({
-		name: `${task_directory}/${count+1}.webm`,
+		name: `${task_directory}/${count+1}.mp3`,
 		input: blob,
 	})
 
@@ -797,7 +817,7 @@ async function start_text_reading_task() {
 
 	startRecording();
 	await startTaskTimer("Recording", ge_variant === "oge" ? 120 : 90);
-	stopRecording();
+	await stopRecording();
 
 	tr_page.remove();
 }
@@ -829,7 +849,7 @@ async function start_survey_task() {
 
 		startRecording();
 		await startTaskTimer("Recording", 40);
-		stopRecording();
+		await stopRecording();
 	}
 
 	await say(is_oge ? OGE_2_GOODBYE : EGE_3_GOODBYE);
@@ -851,7 +871,7 @@ async function start_monologue_task() {
 
 	startRecording();
 	await startTaskTimer("Recording", 120);
-	stopRecording();
+	await stopRecording();
 
 	monologue.remove();
 }
@@ -872,7 +892,7 @@ async function start_research_task() {
 	for (let i = 0; i < 4; i++) {
 		startRecording();
 		await startTaskTimer("Recording", 20);
-		stopRecording();
+		await stopRecording();
 	}
 
 	research.remove();
@@ -898,7 +918,7 @@ async function start_project_task() {
 
 	startRecording();
 	await startTaskTimer("Recording", 180);
-	stopRecording();
+	await stopRecording();
 
 	project.remove();
 }
