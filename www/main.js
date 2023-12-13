@@ -774,7 +774,7 @@ async function start_ge(event) {
 async function start_task(task_number) {
 	console.log(`Starting task ${task_number}`);
 
-	let choose = (x, y) => ge_variant === "oge" ? x : y;
+	let choose = (x, y) => ge_type === "oge" ? x : y;
 
 	if (task_number == 1) {
 		await start_text_reading_task();
@@ -803,7 +803,7 @@ async function start_text_reading_task() {
 }
 
 async function start_survey_task() {
-	let is_oge = ge_variant === "oge";
+	let is_oge = ge_type === "oge";
 
 	let file = is_oge ? "2.txt" : "3.txt";
 	let text = await getFileContents(`${ge_type}/${ge_variant}/${file}`);
