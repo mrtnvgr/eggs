@@ -843,11 +843,12 @@ async function start_survey_task() {
 	}
 
 	for (let sentence of sentences) {
+		startRecording();
+
 		window._current_tts_sentence = sentence;
 		await say(sentence);
 		delete window._current_tts_sentence;
 
-		startRecording();
 		await startTaskTimer("Recording", 40);
 		await stopRecording();
 	}
