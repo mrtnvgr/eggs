@@ -847,10 +847,11 @@ async function start_survey_task() {
 
 		window._current_tts_sentence = sentence;
 		await say(sentence);
-		delete window._current_tts_sentence;
 
 		await startTaskTimer("Recording", 40);
 		await stopRecording();
+
+		delete window._current_tts_sentence;
 	}
 
 	await say(is_oge ? OGE_2_GOODBYE : EGE_3_GOODBYE);
