@@ -632,7 +632,11 @@ async function initRecorder() {
 	window._chunks = [];
 
 	try {
-		let audio_stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+		let audio_stream = await navigator.mediaDevices.getUserMedia({audio: {
+			autoGainControl: false,
+			echoCancellation: false,
+			noiseSuppression: false,
+		}});
 		window._recorder = new MediaRecorder(audio_stream);
 	} catch (e) {
 		console.error(`Failed to get microphone permissions: ${e}`);
