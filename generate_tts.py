@@ -26,7 +26,7 @@ EGE_3_GOODBYE = "Thank you very much for your interview."
 
 
 LOCALES = ["en-GB"]
-BLACKLIST = ["en-GB-MaisieNeural", "en-US-AnaNeural"]
+BLACKLIST = ["en-GB-MaisieNeural", "en-US-AnaNeural", "en-GB-ThomasNeural"]
 
 def download_file(url, path):
     with open(path, "wb") as f:
