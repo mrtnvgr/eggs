@@ -41,7 +41,10 @@ async def select_random_voice(page, current_voice):
     if current_voice in options:
         options.remove(current_voice)
 
-    await page.select('select[name="charecter"]', random.choice(options))
+    new_voice = random.choice(options)
+    await page.select('select[name="charecter"]', new_voice)
+
+    return new_voice
 
 async def get_speech_url(page, text):
     await page.waitForSelector("#text")
@@ -52,17 +55,6 @@ async def get_speech_url(page, text):
 
     await page.waitForSelector("a[download]")
     return await page.querySelectorEval("a[download]", "a => a.href")
-
-async def generate_sentence(page, prefix, variant, sentence):
-    await asyncio.sleep(0.5)
-    url = await get_speech_url(page, sentence)
-
-    sentence_hash = hashlib.sha256(sentence.encode("utf-8")).hexdigest()
-    audio_path = os.path.join("www", "audio", f"{prefix}_{variant}_{sentence_hash}.mp3")
-
-    await asyncio.sleep(0.5)
-    download_file(url, audio_path)
-    print(url)
 
 async def generate_surveys(page, ge_type, surveys):
     current_voice = None
@@ -85,10 +77,18 @@ async def generate_surveys(page, ge_type, surveys):
         task_goodbye = OGE_2_GOODBYE if ge_type == "oge" else EGE_3_GOODBYE
         sentences.append(task_goodbye)
 
-        await select_random_voice(page, current_voice)
+        current_voice = await select_random_voice(page, current_voice)
 
         for sentence in sentences:
-            await generate_sentence(page, ge_type, variant, sentence)
+            await asyncio.sleep(0.5)
+            url = await get_speech_url(page, sentence)
+
+            sentence_hash = hashlib.sha256(sentence.encode("utf-8")).hexdigest()
+            audio_path = os.path.join("www", "audio", f"{ge_type}_{variant}_{sentence_hash}.mp3")
+
+            await asyncio.sleep(0.5)
+            download_file(url, audio_path)
+            print(f"{current_voice}: {url}")
 
 async def main():
     browser = await launch(executablePath=chromium_path)
