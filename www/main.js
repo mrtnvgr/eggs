@@ -628,7 +628,7 @@ async function startTaskTimer(text, seconds) {
 // --- Recorder ---
 
 async function initRecorder() {
-	window._recordings = [];
+	window._files = [];
 	window._chunks = [];
 
 	try {
@@ -678,13 +678,13 @@ async function stopRecording() {
 	let task_directory = `Task ${current_task}`;
 
 	let count = 0;
-	for (let recording of _recordings) {
-		if (recording.name.includes(task_directory)) {
+	for (let file of _files) {
+		if (file.name.includes(task_directory) && file.name.endsWith(".mp3")) {
 			count++;
 		}
 	}
 
-	_recordings.push({
+	_files.push({
 		name: `${task_directory}/${count+1}.mp3`,
 		input: blob,
 	});
@@ -731,7 +731,7 @@ async function say(text) {
 // --- Download page ---
 
 async function showDownloadPage() {
-	let blob = await downloadZip(_recordings).blob();
+	let blob = await downloadZip(_files).blob();
 
 	let download_page = document.createElement("body");
 
@@ -810,7 +810,7 @@ async function start_task(task_number) {
 async function start_text_reading_task() {
 	let text = await getFileContents(`${ge_type}/${ge_variant}/1.txt`);
 
-	_recordings.push({
+	_files.push({
 		name: "Task 1/Text.txt",
 		input: text,
 	});
@@ -871,7 +871,7 @@ async function start_monologue_task() {
 	let questions = raw.splitlines();
 	let topic = questions.shift();
 
-	_recordings.push({
+	_files.push({
 		name: "Task 3/Task.txt",
 		input: `${OGE_3_HEADER(topic)[0]}\n\n${questions.join("\n")}`,
 	});
