@@ -687,7 +687,7 @@ async function stopRecording() {
 	_recordings.push({
 		name: `${task_directory}/${count+1}.mp3`,
 		input: blob,
-	})
+	});
 
 	_chunks = [];
 }
@@ -809,6 +809,12 @@ async function start_task(task_number) {
 
 async function start_text_reading_task() {
 	let text = await getFileContents(`${ge_type}/${ge_variant}/1.txt`);
+
+	_recordings.push({
+		name: "Task 1/Text.txt",
+		input: text,
+	});
+
 	let tr_page = createTextReadingPage(text);
 
 	await startTaskTimer("Preparation", 90);
@@ -861,9 +867,14 @@ async function start_survey_task() {
 
 async function start_monologue_task() {
 	let raw = await getFileContents(`${ge_type}/${ge_variant}/3.txt`);
-	let questions = raw.splitlines();
 
+	let questions = raw.splitlines();
 	let topic = questions.shift();
+
+	_recordings.push({
+		name: "Task 3/Task.txt",
+		input: `${OGE_3_HEADER(topic)[0]}\n\n${questions.join("\n")}`,
+	});
 
 	let monologue = createMonologuePage(topic, questions);
 
