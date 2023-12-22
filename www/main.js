@@ -731,11 +731,7 @@ async function say(text) {
 // --- Download page ---
 
 async function showDownloadPage() {
-	console.log(_recordings);
-
-	// TODO: https://github.com/Touffy/client-zip/issues/79
 	let blob = await downloadZip(_recordings).blob();
-	console.log(blob);
 
 	let download_page = document.createElement("body");
 
