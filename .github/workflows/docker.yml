@@ -46,21 +46,6 @@ jobs:
         env:
           PYPPETEER_HOME: ./local-chromium
 
-      - name: Create artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: built
-          path: |
-            www
-
-      - name: Build docker
-        run: |
-          docker build . --tag ghcr.io/mrtnvgr/eggs:latest
-
-      - name: Publish docker
-        run: |
-          docker push ghcr.io/mrtnvgr/eggs:latest
-
       - name: Pack files
         run: |
           zip -r built.zip www
