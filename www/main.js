@@ -43,9 +43,14 @@ const EGE_4_FOURTH = (x) => `explain your opinion on the subject of the project 
 const EGE_4_FOOTER = "You will speak for not more than 3 minutes (12-15 sentences). You have to talk continuously.";
 const EGE_4_IMG_COUNT = 2;
 
-
+const VOICE_SPEED_KEY = "voice_speed";
 const DEFAULT_VOICE_SPEED = 0.9;
 const MIN_VOICE_SPEED = 0.5;
+
+const SETTINGS_SCHEMA = [
+	["cheats", "Читы", true]
+];
+const SETTINGS_KEY = (x) => `settings_${x}`;
 
 // --- Helper functions ---
 
@@ -100,6 +105,12 @@ async function sha256(message) {
     const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     return hashArray.map(b => ("00" + b.toString(16)).slice(-2)).join("");
+}
+
+function setLocalStorageDefault(key, value) {
+	if (localStorage.getItem(key) == null) {
+		localStorage.setItem(key, value);
+	}
 }
 
 // --- Main menu events ---
@@ -542,16 +553,18 @@ function showSettings() {
 	legend.innerHTML = "Настройки";
 	settings_form.appendChild(legend);
 
-	let createToggle = (id, label) => {
-		let item = `settings_${id}`;
+	let createToggle = (id, label, def_value) => {
+		let item = SETTINGS_KEY(id);
 		let state = localStorage.getItem(item);
 
-		return createCheckbox(id, label, state ? state : true, (e) => {
+		return createCheckbox(id, label, state ? state : def_value, (e) => {
 			localStorage.setItem(item, e.target.checked);
 		});
 	};
 
-	settings_form.appendChild(createToggle("cheats", "Читы"));
+	for (let setting of SETTINGS_SCHEMA) {
+		settings_form.appendChild(createToggle(setting[0], setting[1], setting[2]));
+	}
 
 	switchBodyTo(settings_selector);
 }
@@ -655,7 +668,6 @@ async function startTaskTimer(text, seconds) {
 
 	// Create speed slider
 	if (is_speaking && sv_cheats_1) {
-		let user_vs = localStorage.getItem("voice_speed");
 		let vs_wrapper = document.createElement("div");
 		vs_wrapper.className = "vs_wrapper";
 
@@ -668,10 +680,10 @@ async function startTaskTimer(text, seconds) {
 		voiceSpeed.min = MIN_VOICE_SPEED;
 		voiceSpeed.max = 1.0;
 		voiceSpeed.step = 0.01;
-		voiceSpeed.value = user_vs ? user_vs : DEFAULT_VOICE_SPEED;
+		voiceSpeed.value = localStorage.getItem(VOICE_SPEED_KEY);
 
 		voiceSpeed.oninput = () => {
-			localStorage.setItem("voice_speed", voiceSpeed.value);
+			localStorage.setItem(VOICE_SPEED_KEY, voiceSpeed.value);
 			_tts_audio.playbackRate = voiceSpeed.value;
 		};
 
@@ -823,12 +835,11 @@ async function initTTS() {
 }
 
 async function say(text) {
-	let sv_cheats_1 = localStorage.getItem("settings_cheats");
-	let user_vs = localStorage.getItem("voice_speed");
+	let sv_cheats_1 = localStorage.getItem(SETTINGS_KEY("cheats"));
 	let text_hash = await sha256(text);
 
 	_tts_audio.src = `audio/${ge_type}_${ge_variant}_${text_hash}.mp3`;
-	_tts_audio.playbackRate = user_vs && !sv_cheats_1 ? user_vs : DEFAULT_VOICE_SPEED;
+	_tts_audio.playbackRate = sv_cheats_1 ? localStorage.getItem(VOICE_SPEED_KEY) : 1.0;
 	_tts_audio.play();
 
 	// Await for audio to finish
@@ -1057,4 +1068,10 @@ window.onload = function() {
 	document.getElementById("ege").addEventListener("click", select_ge);
 
 	document.getElementById("settings").addEventListener("click", showSettings);
+
+	for (let setting of SETTINGS_SCHEMA) {
+		setLocalStorageDefault(SETTINGS_KEY(setting[0]), setting[2]);
+	}
+
+	setLocalStorageDefault(VOICE_SPEED_KEY, DEFAULT_VOICE_SPEED);
 }
