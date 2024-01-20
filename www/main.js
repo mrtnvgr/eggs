@@ -45,7 +45,7 @@ const EGE_4_IMG_COUNT = 2;
 
 
 const DEFAULT_VOICE_SPEED = 0.9;
-const MIN_VOICE_SPEED = 0.7;
+const MIN_VOICE_SPEED = 0.5;
 
 // --- Helper functions ---
 
