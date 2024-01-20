@@ -2,6 +2,7 @@
 :root {
   --bg: #1e1e2e;
   --fg: #cdd6f4;
+  --grey: #9399b2;
 
   --primary: #b4befe;
   --red: #f38ba8;
@@ -98,23 +99,16 @@ button.med-btn {
   padding: 0.8em 1em;
 }
 
-button.full-variant-btn {
-  grid-area: full;
+button.continue-btn {
+  padding: 0.05em 0.25em;
 }
 
 button.unavailable {
-  background: #9399b2;
+  background: var(--grey);
   pointer-events: none;
 }
 
 /* --- Grids --- */
-
-div.task-grid {
-  display: grid;
-  grid-template-areas:
-    "full full full full"
-    "task task task task";
-}
 
 div.var-grid {
 	display: grid;
@@ -184,9 +178,95 @@ p {
   gap: 1.25em;
 }
 
+/* --- Inputs --- */
+
 input[type="range"] {
   accent-color: var(--primary);
   max-width: 250px;
+}
+
+fieldset {
+  display: flex;
+  flex-flow: column;
+  border: none;
+  row-gap: 1em;
+}
+
+fieldset legend {
+  margin-bottom: 1em;
+}
+
+fieldset div {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+fieldset .buttons {
+  margin-top: 1em;
+}
+
+fieldset legend,
+fieldset .buttons {
+  font-size: 2.5em;
+}
+
+label {
+  font-size: 2em;
+}
+
+label.task-name {
+  width: 156px;
+}
+
+/* --- Checkbox --- */
+/* Credits: https://codepen.io/alvarotrigo/pen/wvyvjva */
+
+.toggler-wrapper {
+  display: block;
+  width: 45px;
+  height: 25px;
+  cursor: pointer;
+  position: relative;
+}
+
+.toggler-wrapper input[type="checkbox"] {
+  display: none;
+}
+
+.toggler-wrapper input[type="checkbox"]:checked+.toggler-slider {
+  background-color: var(--primary);
+}
+
+.toggler-wrapper .toggler-slider {
+  background-color: var(--fg);
+  position: absolute;
+  border-radius: 100px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-transition: all 300ms ease;
+  transition: all 300ms ease;
+}
+
+.toggler-wrapper .toggler-knob {
+  position: absolute;
+  -webkit-transition: all 300ms ease;
+  transition: all 300ms ease;
+}
+
+.toggler-wrapper input[type="checkbox"]:checked+.toggler-slider .toggler-knob {
+  left: calc(100% - 19px - 3px);
+}
+
+.toggler-wrapper .toggler-knob {
+  width: calc(25px - 6px);
+  height: calc(25px - 6px);
+  border-radius: 50%;
+  left: 3px;
+  top: 3px;
+  background-color: var(--bg);
 }
 
 /* --- Other task elements --- */

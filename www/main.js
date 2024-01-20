@@ -118,14 +118,15 @@ async function select_ge(event) {
 }
 
 async function select_task(event) {
-	// Get selected task
-	window.selected_task = event.target.id;
+	let checkboxes = document.querySelectorAll('input[name="task"]:checked');
+	window.selected_tasks = Array.from(checkboxes).map(x => x.id);
 
 	// Get variant count
 	const count = await getFileContents(`${ge_type}/count`);
 
-	// Disable all task buttons
-	disableElementsByClassName("task-btn");
+	// Disable all task stuff
+	disableElementsByClassName("task-checkbox");
+	disableElementsByClassName("continue-btn");
 
 	// Create new variant selector
 	createVariantSelector(count);
@@ -157,33 +158,57 @@ function createTaskSelector() {
 
 	let task_selector = createSelector();
 
-	// Create btn wrapper
-	let task_buttons = document.createElement("div");
-	task_buttons.className = "task-grid";
-	task_selector.appendChild(task_buttons);
+	let task_form = document.createElement("fieldset");
+	task_selector.appendChild(task_form);
 
-	// Add full variant button
-	let fvbutton = document.createElement("button");
+	let legend = document.createElement("legend");
+	legend.innerHTML = "Задания варианта:";
+	task_form.appendChild(legend);
 
-	fvbutton.className = "btn med-btn full-variant-btn task-btn";
-	fvbutton.id = "full-variant";
-	fvbutton.innerHTML = "Full";
-	fvbutton.addEventListener("click", select_task);
-
-	task_buttons.appendChild(fvbutton);
-
-	// Add number buttons to variant selector
 	for (let i = 1; i <= task_count; i++) {
-		let button = document.createElement("button");
+		let task = document.createElement("div");
+		task_form.appendChild(task);
 
-		button.className = "btn med-btn task-btn";
-		button.id = i;
-		button.innerHTML = i;
+		let label = document.createElement("label");
+		label.htmlFor = i;
+		label.className = "task-name";
+		label.innerHTML = `${i} задание`;
 
-		button.addEventListener("click", select_task);
+		task.appendChild(label);
 
-		task_buttons.appendChild(button);
+		let toggler_wrapper = document.createElement("label");
+		toggler_wrapper.className = "toggler-wrapper";
+		task.appendChild(toggler_wrapper);
+
+		let checkbox = document.createElement("input");
+
+		checkbox.type = "checkbox";
+		checkbox.className = "task-checkbox";
+		checkbox.name = "task";
+		checkbox.id = i;
+		checkbox.value = i;
+		checkbox.checked = true;
+
+		toggler_wrapper.appendChild(checkbox);
+
+		let slider = document.createElement("div");
+		slider.className = "toggler-slider";
+		toggler_wrapper.appendChild(slider);
+
+		let knob = document.createElement("div");
+		knob.className = "toggler-knob";
+		slider.appendChild(knob);
 	}
+
+	let btn_wrapper = document.createElement("div");
+	btn_wrapper.className = "buttons";
+	task_form.appendChild(btn_wrapper);
+
+	let continue_button = document.createElement("button");
+	continue_button.className = "btn continue-btn";
+	continue_button.innerHTML = "Начать";
+	continue_button.addEventListener("click", select_task);
+	btn_wrapper.appendChild(continue_button);
 
 	switchBodyTo(task_selector);
 }
@@ -811,7 +836,7 @@ async function start_ge(event) {
 	console.log(`GE type: ${ge_type}`);
 	console.log(`GE variant: ${ge_variant}`);
 	console.log(`Task count: ${task_count}`);
-	console.log(`Task: ${selected_task}`); // `full-variant` - all tasks
+	console.log(`Tasks: ${selected_tasks}`);
 
 	// Remove last selector
 	document.getElementById("selector-page").remove();
@@ -820,18 +845,13 @@ async function start_ge(event) {
 	await showTimerPage("Be ready for the test", 5);
 
 	// Run tasks
-	if (selected_task === "full-variant") {
-		for (let i = 1; i <= task_count; i++) {
-			window.current_task = `${i}`;
-			await start_task(i);
+	for (let task of selected_tasks) {
+		window.current_task = task;
+		await start_task(task);
 
-			if (i < task_count) {
-				await showTimerPage("Be ready for the next task", 5);
-			}
+		if (task < selected_tasks.length) {
+			await showTimerPage("Be ready for the next task", 5);
 		}
-	} else {
-		window.current_task = selected_task;
-		await start_task(selected_task);
 	}
 
 	await showDownloadPage();
