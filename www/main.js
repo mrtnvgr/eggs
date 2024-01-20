@@ -125,7 +125,7 @@ async function select_task(event) {
 	const count = await getFileContents(`${ge_type}/count`);
 
 	// Disable all task stuff
-	disableElementsByClassName("task-checkbox");
+	disableElementsByClassName("checkbox");
 	disableElementsByClassName("continue-btn");
 
 	// Create new variant selector
@@ -166,38 +166,8 @@ function createTaskSelector() {
 	task_form.appendChild(legend);
 
 	for (let i = 1; i <= task_count; i++) {
-		let task = document.createElement("div");
-		task_form.appendChild(task);
-
-		let label = document.createElement("label");
-		label.htmlFor = i;
-		label.className = "task-name";
-		label.innerHTML = `${i} задание`;
-
-		task.appendChild(label);
-
-		let toggler_wrapper = document.createElement("label");
-		toggler_wrapper.className = "toggler-wrapper";
-		task.appendChild(toggler_wrapper);
-
-		let checkbox = document.createElement("input");
-
-		checkbox.type = "checkbox";
-		checkbox.className = "task-checkbox";
-		checkbox.name = "task";
-		checkbox.id = i;
-		checkbox.value = i;
-		checkbox.checked = true;
-
-		toggler_wrapper.appendChild(checkbox);
-
-		let slider = document.createElement("div");
-		slider.className = "toggler-slider";
-		toggler_wrapper.appendChild(slider);
-
-		let knob = document.createElement("div");
-		knob.className = "toggler-knob";
-		slider.appendChild(knob);
+		let checkbox = createCheckbox(i, `${i} задание`);
+		task_form.appendChild(checkbox);
 	}
 
 	let btn_wrapper = document.createElement("div");
@@ -211,6 +181,44 @@ function createTaskSelector() {
 	btn_wrapper.appendChild(continue_button);
 
 	switchBodyTo(task_selector);
+}
+
+function createCheckbox(id, text, default_state=true, handler=null) {
+	let wrapper = document.createElement("div");
+
+	let label = document.createElement("label");
+	label.htmlFor = id;
+	label.className = "task-name";
+	label.innerHTML = text;
+
+	wrapper.appendChild(label);
+
+	let toggler_wrapper = document.createElement("label");
+	toggler_wrapper.className = "toggler-wrapper";
+	wrapper.appendChild(toggler_wrapper);
+
+	let checkbox = document.createElement("input");
+
+	checkbox.type = "checkbox";
+	checkbox.className = "checkbox";
+	checkbox.name = "task";
+	checkbox.id = id;
+	checkbox.value = id;
+	checkbox.checked = default_state;
+
+	checkbox.onchange = handler;
+
+	toggler_wrapper.appendChild(checkbox);
+
+	let slider = document.createElement("div");
+	slider.className = "toggler-slider";
+	toggler_wrapper.appendChild(slider);
+
+	let knob = document.createElement("div");
+	knob.className = "toggler-knob";
+	slider.appendChild(knob);
+
+	return wrapper;
 }
 
 function createVariantSelector(count) {
@@ -524,6 +532,30 @@ function createProjectPage(topic, questions) {
 	return project_page;
 }
 
+function showSettings() {
+	let settings_selector = createSelector();
+
+	let settings_form = document.createElement("fieldset");
+	settings_selector.appendChild(settings_form);
+
+	let legend = document.createElement("legend");
+	legend.innerHTML = "Настройки";
+	settings_form.appendChild(legend);
+
+	let createToggle = (id, label) => {
+		let item = `settings_${id}`;
+		let state = localStorage.getItem(item);
+
+		return createCheckbox(id, label, state ? state : true, (e) => {
+			localStorage.setItem(item, e.target.checked);
+		});
+	};
+
+	settings_form.appendChild(createToggle("cheats", "Читы"));
+
+	switchBodyTo(settings_selector);
+}
+
 // --- Timer page ---
 
 async function showTimerPage(text, time) {
@@ -561,6 +593,7 @@ async function startTaskTimer(text, seconds) {
 	let is_fake = text == "Speaking" && seconds == 0;
 	let is_recording = text == "Recording";
 	let is_speaking = text == "Speaking";
+	let sv_cheats_1 = localStorage.getItem("settings_cheats");
 
 	// Create task timer wrapper
 	let timer = document.createElement("div");
@@ -587,7 +620,7 @@ async function startTaskTimer(text, seconds) {
 	// Create pause button
 	let pause = document.createElement("div");
 	pause.className = "pause";
-	pause.style = is_speaking ? "display: none" : "";
+	pause.style = is_speaking && sv_cheats_1 ? "display: none" : "";
 
 	pause.addEventListener("click", () => {
 		togglePauseRecording();
@@ -599,7 +632,7 @@ async function startTaskTimer(text, seconds) {
 	// Create skip button
 	let skip = document.createElement("div");
 	skip.className = "skip";
-	skip.style = is_speaking ? "display: none" : "";
+	skip.style = is_speaking && sv_cheats_1 ? "display: none" : "";
 
 	skip.addEventListener("click", () => {
 		skip.disable = true;
@@ -611,7 +644,7 @@ async function startTaskTimer(text, seconds) {
 	// Create "repeat question" button
 	let repeat = document.createElement("div");
 	repeat.className = "repeat";
-	repeat.style = is_recording ? "" : "display: none";
+	repeat.style = is_recording && sv_cheats_1 ? "" : "display: none";
 
 	repeat.addEventListener("click", () => {
 		repeat.disable = true;
@@ -621,7 +654,7 @@ async function startTaskTimer(text, seconds) {
 	icon_wrapper.appendChild(repeat);
 
 	// Create speed slider
-	if (is_speaking) {
+	if (is_speaking && sv_cheats_1) {
 		let user_vs = localStorage.getItem("voice_speed");
 		let vs_wrapper = document.createElement("div");
 		vs_wrapper.className = "vs_wrapper";
@@ -790,11 +823,12 @@ async function initTTS() {
 }
 
 async function say(text) {
+	let sv_cheats_1 = localStorage.getItem("settings_cheats");
 	let user_vs = localStorage.getItem("voice_speed");
 	let text_hash = await sha256(text);
 
 	_tts_audio.src = `audio/${ge_type}_${ge_variant}_${text_hash}.mp3`;
-	_tts_audio.playbackRate = user_vs ? user_vs : DEFAULT_VOICE_SPEED;
+	_tts_audio.playbackRate = user_vs && !sv_cheats_1 ? user_vs : DEFAULT_VOICE_SPEED;
 	_tts_audio.play();
 
 	// Await for audio to finish
@@ -1021,4 +1055,6 @@ window.onload = function() {
 
 	document.getElementById("oge").addEventListener("click", select_ge);
 	document.getElementById("ege").addEventListener("click", select_ge);
+
+	document.getElementById("settings").addEventListener("click", showSettings);
 }
