@@ -1,3 +1,5 @@
+// Ахтунг! 🍝!
+
 import { downloadZip } from "https://cdn.jsdelivr.net/npm/client-zip/index.js";
 
 // MediaRecorder polyfill with MP3 support
@@ -41,6 +43,10 @@ const EGE_4_FOURTH = (x) => `explain your opinion on the subject of the project 
 const EGE_4_FOOTER = "You will speak for not more than 3 minutes (12-15 sentences). You have to talk continuously.";
 const EGE_4_IMG_COUNT = 2;
 
+
+const DEFAULT_VOICE_SPEED = 0.9;
+const MIN_VOICE_SPEED = 0.7;
+
 // --- Helper functions ---
 
 function disableElementsByClassName(className) {
@@ -67,8 +73,8 @@ async function getFileContents(url_path) {
 	return await response.text();
 }
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms * 1000));
+function sleep(s) {
+    return new Promise(resolve => setTimeout(resolve, s * 1000));
 }
 
 // https://stackoverflow.com/a/6313008
@@ -527,6 +533,10 @@ async function startTaskTimer(text, seconds) {
 		previous_timer.remove();
 	}
 
+	let is_fake = text == "Speaking" && seconds == 0;
+	let is_recording = text == "Recording";
+	let is_speaking = text == "Speaking";
+
 	// Create task timer wrapper
 	let timer = document.createElement("div");
 	timer.id = "task-timer";
@@ -535,6 +545,7 @@ async function startTaskTimer(text, seconds) {
 	let count = document.createElement("p");
 	count.className = "tt-countdown";
 	count.innerHTML = seconds.toMMSS();
+	count.style = is_fake ? "display: none": "";
 	timer.appendChild(count);
 
 	// Create title
@@ -551,6 +562,7 @@ async function startTaskTimer(text, seconds) {
 	// Create pause button
 	let pause = document.createElement("div");
 	pause.className = "pause";
+	pause.style = is_speaking ? "display: none" : "";
 
 	pause.addEventListener("click", () => {
 		togglePauseRecording();
@@ -562,6 +574,7 @@ async function startTaskTimer(text, seconds) {
 	// Create skip button
 	let skip = document.createElement("div");
 	skip.className = "skip";
+	skip.style = is_speaking ? "display: none" : "";
 
 	skip.addEventListener("click", () => {
 		skip.disable = true;
@@ -571,17 +584,46 @@ async function startTaskTimer(text, seconds) {
 	icon_wrapper.appendChild(skip);
 
 	// Create "repeat question" button
-	let repeat_existance = typeof _current_tts_sentence !== "undefined" && text == "Recording";
-	if (repeat_existance) {
-		var repeat = document.createElement("div");
-		repeat.className = "repeat";
+	let repeat = document.createElement("div");
+	repeat.className = "repeat";
+	repeat.style = is_recording ? "" : "display: none";
 
-		repeat.addEventListener("click", () => {
-			repeat.disable = true;
-			repeat.classList.toggle("repeat-please");
-		});
+	repeat.addEventListener("click", () => {
+		repeat.disable = true;
+		repeat.classList.toggle("repeat-please");
+	});
 
-		icon_wrapper.appendChild(repeat);
+	icon_wrapper.appendChild(repeat);
+
+	// Create speed slider
+	if (is_speaking) {
+		let user_vs = localStorage.getItem("voice_speed");
+		let vs_wrapper = document.createElement("div");
+		vs_wrapper.className = "vs_wrapper";
+
+		let slow = document.createElement("div");
+		slow.className = "slow";
+		vs_wrapper.appendChild(slow);
+
+		let voiceSpeed = document.createElement("input");
+		voiceSpeed.type = "range";
+		voiceSpeed.min = MIN_VOICE_SPEED;
+		voiceSpeed.max = 1.0;
+		voiceSpeed.step = 0.01;
+		voiceSpeed.value = user_vs ? user_vs : DEFAULT_VOICE_SPEED;
+
+		voiceSpeed.oninput = () => {
+			localStorage.setItem("voice_speed", voiceSpeed.value);
+			_tts_audio.playbackRate = voiceSpeed.value;
+		};
+
+		vs_wrapper.appendChild(voiceSpeed);
+
+		let fast = document.createElement("div");
+		fast.className = "fast";
+		vs_wrapper.appendChild(fast);
+
+		icon_wrapper.appendChild(vs_wrapper);
 	}
 
 	// Add timer to task page wrapper
@@ -589,10 +631,10 @@ async function startTaskTimer(text, seconds) {
 	wrapper.classList.toggle("with-timer");
 	wrapper.appendChild(timer);
 
-	for (let i = seconds; i >= 0; i--) {
+	for (let i = is_fake ? 1 : seconds; i >= 0; i--) {
 		count.innerHTML = i.toMMSS();
 
-		// Check icon events every 100ms for better responsiveness
+		// Check events every 100ms for better responsiveness
 		for (let j = 10; j > 0; j--) {
 			if (skip.classList.contains("skipped")) {
 				i = 0;
@@ -603,7 +645,7 @@ async function startTaskTimer(text, seconds) {
 				j += 1;
 			}
 
-			if (repeat_existance && repeat.classList.contains("repeat-please")) {
+			if (repeat.classList.contains("repeat-please")) {
 				i = seconds;
 
 				repeat.remove();
@@ -614,6 +656,10 @@ async function startTaskTimer(text, seconds) {
 				togglePauseRecording();
 
 				break;
+			}
+
+			if (is_fake && !_tts_audio.ended) {
+				j += 1;
 			}
 
 			await sleep(0.1);
@@ -717,9 +763,11 @@ async function initTTS() {
 }
 
 async function say(text) {
+	let user_vs = localStorage.getItem("voice_speed");
 	let text_hash = await sha256(text);
 
 	_tts_audio.src = `audio/${ge_type}_${ge_variant}_${text_hash}.mp3`;
+	_tts_audio.playbackRate = user_vs ? user_vs : DEFAULT_VOICE_SPEED;
 	_tts_audio.play();
 
 	// Await for audio to finish
@@ -843,16 +891,22 @@ async function start_survey_task() {
 		let theme = sentences.shift();
 		let goal = sentences.shift();
 
-		await say(OGE_2_HELLO(theme, goal));
+		say(OGE_2_HELLO(theme, goal));
 	} else {
-		await say(EGE_3_HELLO(sentences.shift()));
+		say(EGE_3_HELLO(sentences.shift()));
 	}
+
+	// note: tts will be awaited in task timer
+	await startTaskTimer("Speaking", 0);
 
 	for (let sentence of sentences) {
 		startRecording();
 
 		window._current_tts_sentence = sentence;
-		await say(sentence);
+
+		// note: tts will be awaited in task timer
+		say(sentence);
+		await startTaskTimer("Speaking", 0);
 
 		await startTaskTimer("Recording", 40);
 		await stopRecording();
