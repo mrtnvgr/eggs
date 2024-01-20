@@ -683,11 +683,13 @@ async function startTaskTimer(text, seconds) {
 				break;
 			}
 
+			await sleep(0.1);
+
 			if (is_fake && !_tts_audio.ended) {
 				j += 1;
+			} else if (is_fake && _tts_audio.ended) {
+				break;
 			}
-
-			await sleep(0.1);
 		}
 	}
 
@@ -934,7 +936,9 @@ async function start_survey_task() {
 		delete window._current_tts_sentence;
 	}
 
-	await say(is_oge ? OGE_2_GOODBYE : EGE_3_GOODBYE);
+	// note: tts will be awaited in task timer
+	say(is_oge ? OGE_2_GOODBYE : EGE_3_GOODBYE);
+	await startTaskTimer("Speaking", 0);
 
 	survey.remove();
 }
