@@ -48,6 +48,7 @@ const DEFAULT_VOICE_SPEED = 0.9;
 const MIN_VOICE_SPEED = 0.5;
 
 const SETTINGS_SCHEMA = [
+	// Name, Storage key, Default value
 	["cheats", "Читы", true]
 ];
 const SETTINGS_KEY = (x) => `settings_${x}`;
@@ -131,6 +132,8 @@ async function select_ge(event) {
 async function select_task(event) {
 	let checkboxes = document.querySelectorAll('input[name="task"]:checked');
 	window.selected_tasks = Array.from(checkboxes).map(x => x.id);
+
+	if (selected_tasks.length == 0) return;
 
 	// Get variant count
 	const count = await getFileContents(`${ge_type}/count`);
