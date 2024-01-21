@@ -86,6 +86,9 @@ async def generate_surveys(page, ge_type, surveys):
             sentence_hash = hashlib.sha256(sentence.encode("utf-8")).hexdigest()
             audio_path = os.path.join("www", "audio", f"{ge_type}_{variant}_{sentence_hash}.mp3")
 
+            if os.path.exists(audio_path):
+                continue
+
             await asyncio.sleep(0.5)
             download_file(url, audio_path)
             print(f"{current_voice}: {url}")
@@ -103,7 +106,7 @@ async def main():
         except PageError:
             attempts -= 1
 
-    os.mkdir(os.path.join("www", "audio"))
+    os.makedirs(os.path.join("www", "audio"), exist_ok=True)
 
     await generate_surveys(page, "oge", glob.glob("www/data/oge/*/2.txt"))
     await generate_surveys(page, "ege", glob.glob("www/data/ege/*/3.txt"))
