@@ -202,7 +202,7 @@ function createCheckbox(id, text, default_state=true, handler=null) {
 
 	let label = document.createElement("label");
 	label.htmlFor = id;
-	label.className = "task-name";
+	label.className = text.endsWith("задание") ? "task-name" : "";
 	label.innerHTML = text;
 
 	wrapper.appendChild(label);
@@ -553,7 +553,7 @@ function showSettings() {
 	settings_selector.appendChild(settings_form);
 
 	let legend = document.createElement("legend");
-	legend.innerHTML = "Настройки";
+	legend.innerHTML = "Настройки:";
 	settings_form.appendChild(legend);
 
 	let createToggle = (id, label, def_value) => {

@@ -87,6 +87,7 @@ a.link {
   cursor: pointer;
 
   align-items: center;
+  justify-content: center;
   gap: 0.5em;
   margin-top: 1em;
 }
@@ -230,7 +231,7 @@ fieldset legend {
 fieldset div {
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-evenly;
 }
 
 fieldset .buttons {
