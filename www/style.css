@@ -6,6 +6,7 @@
 
   --primary: #b4befe;
   --red: #f38ba8;
+  --green: #a6e3a1;
 
   --task-underline-gradient: linear-gradient(to right, #f5e0dc, #f2cdcd, #f5c2e7, #cba6f7, #f38ba8, #eba0ac, #fab387, #f9e2af, #a6e3a1, #94e2d5, #89dceb, #74c7ec, #89b4fa, #b4befe);
 
@@ -265,11 +266,11 @@ label.task-name {
 }
 
 .toggler-wrapper input[type="checkbox"]:checked+.toggler-slider {
-  background-color: var(--primary);
+  background-color: var(--green);
 }
 
 .toggler-wrapper .toggler-slider {
-  background-color: var(--fg);
+  background-color: var(--red);
   position: absolute;
   border-radius: 100px;
   top: 0;
