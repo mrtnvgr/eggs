@@ -569,6 +569,18 @@ function showSettings() {
 		settings_form.appendChild(createToggle(setting[0], setting[1], setting[2]));
 	}
 
+	let vk_wrapper = document.createElement("div");
+	vk_wrapper.className = "mm-settings-wrapper";
+	settings_form.appendChild(vk_wrapper);
+
+	let vk_icon = document.createElement("div");
+	vk_icon.className = "vk";
+	vk_wrapper.appendChild(vk_icon);
+
+	let vk_link = document.createElement("p");
+	vk_link.innerHTML = "Привязать";
+	vk_wrapper.appendChild(vk_link);
+
 	switchBodyTo(settings_selector);
 }
 
