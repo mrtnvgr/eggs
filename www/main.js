@@ -43,15 +43,20 @@ const EGE_4_FOURTH = (x) => `explain your opinion on the subject of the project 
 const EGE_4_FOOTER = "You will speak for not more than 3 minutes (12-15 sentences). You have to talk continuously.";
 const EGE_4_IMG_COUNT = 2;
 
+
 const VOICE_SPEED_KEY = "voice_speed";
 const DEFAULT_VOICE_SPEED = 0.9;
 const MIN_VOICE_SPEED = 0.5;
+
 
 const SETTINGS_SCHEMA = [
 	// Name, Storage key, Default value
 	["cheats", "Читы", true]
 ];
 const SETTINGS_KEY = (x) => `settings_${x}`;
+
+
+const VK_URL=`https://oauth.vk.com/authorize?client_id=6121396&scope=69632&response_type=token&revoke=1`;
 
 // --- Helper functions ---
 
@@ -590,15 +595,30 @@ function showSettings() {
 
 	let vk_wrapper = document.createElement("div");
 	vk_wrapper.className = "mm-settings-wrapper";
-	settings_form.appendChild(vk_wrapper);
+
+	settings_selector.appendChild(vk_wrapper);
 
 	let vk_icon = document.createElement("div");
 	vk_icon.className = "vk";
 	vk_wrapper.appendChild(vk_icon);
 
-	let vk_link = document.createElement("p");
-	vk_link.innerHTML = "Привязать";
-	vk_wrapper.appendChild(vk_link);
+	let vk_link_button = document.createElement("p");
+	vk_link_button.innerHTML = "Привязать";
+	vk_wrapper.appendChild(vk_link_button);
+
+	let vk_input = document.createElement("input");
+	vk_input.type = "text";
+	vk_input.placeholder = "Вставьте ссылку сюда";
+	vk_input.hidden = true;
+	vk_input.style = "width: 176px"; // HACK: improve
+	vk_wrapper.appendChild(vk_input);
+
+	vk_link_button.onclick = () => {
+		window.open(VK_URL);
+		vk_link_button.hidden = true;
+		vk_input.hidden = false;
+	}
+	// TODO: vk_input.onchange - проверка на токен
 
 	switchBodyTo(settings_selector);
 }
@@ -1108,4 +1128,10 @@ window.onload = function() {
 	}
 
 	setLocalStorageDefault(VOICE_SPEED_KEY, DEFAULT_VOICE_SPEED);
+
+	if (location.hash.startsWith("#access_token")) {
+		let token = location.hash;
+		location.hash = "";
+		console.log(token);
+	}
 }
