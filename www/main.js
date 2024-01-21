@@ -56,6 +56,7 @@ const SETTINGS_SCHEMA = [
 const SETTINGS_KEY = (x) => `settings_${x}`;
 
 
+const VK_TOKEN_KEY="vk_token";
 const VK_URL=`https://oauth.vk.com/authorize?client_id=6121396&scope=69632&response_type=token&revoke=1`;
 
 // --- Helper functions ---
@@ -134,7 +135,7 @@ function getLocalStorage(key) {
 	} else if (is_float) {
 		return parseFloat(value);
 	} else {
-		return values;
+		return value;
 	}
 }
 
@@ -602,9 +603,18 @@ function showSettings() {
 	vk_icon.className = "icon vk";
 	vk_wrapper.appendChild(vk_icon);
 
+	let is_linked = getLocalStorage(VK_TOKEN_KEY);
+
 	let vk_link_button = document.createElement("p");
 	vk_link_button.innerHTML = "Привязать";
+	vk_link_button.hidden = is_linked ? true : false;
 	vk_wrapper.appendChild(vk_link_button);
+
+	let vk_unlink_button = document.createElement("p");
+	vk_unlink_button.innerHTML = "Отвязать";
+	vk_unlink_button.className = "vk-linked";
+	vk_link_button.hidden = is_linked ? false : true;
+	vk_wrapper.appendChild(vk_unlink_button);
 
 	let vk_input = document.createElement("input");
 	vk_input.type = "text";
@@ -618,7 +628,25 @@ function showSettings() {
 		vk_link_button.hidden = true;
 		vk_input.hidden = false;
 	}
-	// TODO: vk_input.onchange - проверка на токен
+
+	vk_unlink_button.onclick = () => {
+		localStorage.removeItem(VK_TOKEN_KEY);
+		vk_unlink_button.hidden = true;
+		vk_link_button.hidden = false;
+	}
+
+	vk_input.oninput = (e) => {
+		let text = e.target.value.trim();
+		if (!text.includes("access_token=vk1.a")) { return; }
+
+		let token = text.split("access_token=").pop().split("&expires").shift();
+		if (!token) { return; }
+
+		localStorage.setItem(VK_TOKEN_KEY, token);
+
+		vk_input.hidden = true;
+		vk_unlink_button.hidden = false;
+	}
 
 	switchBodyTo(settings_selector);
 }
@@ -1128,10 +1156,4 @@ window.onload = function() {
 	}
 
 	setLocalStorageDefault(VOICE_SPEED_KEY, DEFAULT_VOICE_SPEED);
-
-	if (location.hash.startsWith("#access_token")) {
-		let token = location.hash;
-		location.hash = "";
-		console.log(token);
-	}
 }

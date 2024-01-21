@@ -79,6 +79,8 @@ a.link {
   flex-direction: column;
 }
 
+/* --- Settings --- */
+
 .mm-btn-wrapper,
 .mm-settings-wrapper {
   display: flex;
@@ -107,6 +109,10 @@ a.link {
   100% {
     transform: rotate(360deg);
   }
+}
+
+.vk-linked {
+  color: var(--red);
 }
 
 /* --- Buttons --- */
