@@ -57,6 +57,9 @@ const SETTINGS_KEY = (x) => `settings_${x}`;
 
 
 const VK_TOKEN_KEY="vk_token";
+const VK_USER_ID_KEY="vk_user_id";
+
+const VK_API_VERSION="5.131";
 const VK_URL=`https://oauth.vk.com/authorize?client_id=6121396&scope=69632&response_type=token&revoke=1`;
 
 // --- Helper functions ---
@@ -603,7 +606,7 @@ function showSettings() {
 	vk_icon.className = "icon vk";
 	vk_wrapper.appendChild(vk_icon);
 
-	let is_linked = getLocalStorage(VK_TOKEN_KEY);
+	let is_linked = getLocalStorage(VK_TOKEN_KEY) != null;
 
 	let vk_link_button = document.createElement("p");
 	vk_link_button.innerHTML = "Привязать";
@@ -613,7 +616,7 @@ function showSettings() {
 	let vk_unlink_button = document.createElement("p");
 	vk_unlink_button.innerHTML = "Отвязать";
 	vk_unlink_button.className = "vk-linked";
-	vk_link_button.hidden = is_linked ? false : true;
+	vk_unlink_button.hidden = is_linked ? false : true;
 	vk_wrapper.appendChild(vk_unlink_button);
 
 	let vk_input = document.createElement("input");
@@ -640,9 +643,11 @@ function showSettings() {
 		if (!text.includes("access_token=vk1.a")) { return; }
 
 		let token = text.split("access_token=").pop().split("&expires").shift();
-		if (!token) { return; }
+		let user_id = text.split("&user_id=").pop();
+		if (!token || !user_id) { return; }
 
 		localStorage.setItem(VK_TOKEN_KEY, token);
+		localStorage.setItem(VK_USER_ID_KEY, user_id);
 
 		vk_input.hidden = true;
 		vk_unlink_button.hidden = false;
@@ -953,6 +958,25 @@ async function showDownloadPage() {
 	switchBodyTo(download_page);
 }
 
+// --- VK methods ---
+
+async function vkTestMessage() {
+	const token = getLocalStorage(VK_TOKEN_KEY);
+	const user_id = getLocalStorage(VK_USER_ID_KEY);
+
+	const params = new URLSearchParams({
+		access_token: token,
+		v: VK_API_VERSION,
+		peer_id: user_id,
+		message: "Meow!",
+	});
+
+	const raw = await fetch(`https://api.vk.com/method/messages.send?${params.toString()}`);
+	const resp = await raw.text();
+
+	console.log(resp);
+}
+
 // --- Main GE loop ---
 
 async function start_ge(event) {
@@ -1143,7 +1167,7 @@ async function start_project_task() {
 
 // --- Startup hook ---
 
-window.onload = function() {
+window.onload = async function() {
 	initRecorder();
 
 	document.getElementById("oge").addEventListener("click", select_ge);
@@ -1156,4 +1180,6 @@ window.onload = function() {
 	}
 
 	setLocalStorageDefault(VOICE_SPEED_KEY, DEFAULT_VOICE_SPEED);
+
+	await vkTestMessage();
 }
