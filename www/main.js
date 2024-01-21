@@ -109,8 +109,27 @@ async function sha256(message) {
 }
 
 function setLocalStorageDefault(key, value) {
-	if (localStorage.getItem(key) == null) {
+	if (getLocalStorage(key) == null) {
 		localStorage.setItem(key, value);
+	}
+}
+
+function getLocalStorage(key) {
+	let value = localStorage.getItem(key);
+
+	let is_int = !isNaN(parseInt(value));
+	let is_float = !isNaN(parseFloat(value));
+
+	if (value == "true") {
+		return true;
+	} else if (value == "false") {
+		return false;
+	} else if (is_int) {
+		return parseInt(value);
+	} else if (is_float) {
+		return parseFloat(value);
+	} else {
+		return values;
 	}
 }
 
@@ -130,7 +149,7 @@ async function select_ge(event) {
 }
 
 async function select_task(event) {
-	let checkboxes = document.querySelectorAll('input[name="task"]:checked');
+	let checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
 	window.selected_tasks = Array.from(checkboxes).map(x => x.id);
 
 	if (selected_tasks.length == 0) return;
@@ -215,9 +234,10 @@ function createCheckbox(id, text, default_state=true, handler=null) {
 
 	checkbox.type = "checkbox";
 	checkbox.className = "checkbox";
-	checkbox.name = "task";
+	checkbox.name = id;
 	checkbox.id = id;
 	checkbox.value = id;
+
 	checkbox.checked = default_state;
 
 	checkbox.onchange = handler;
@@ -556,17 +576,16 @@ function showSettings() {
 	legend.innerHTML = "Настройки:";
 	settings_form.appendChild(legend);
 
-	let createToggle = (id, label, def_value) => {
-		let item = SETTINGS_KEY(id);
-		let state = localStorage.getItem(item);
+	let createToggle = (item, label, def_value) => {
+		let state = getLocalStorage(item);
 
-		return createCheckbox(id, label, state ? state : def_value, (e) => {
+		return createCheckbox(item, label, state == null ? def_value : state, (e) => {
 			localStorage.setItem(item, e.target.checked);
 		});
 	};
 
 	for (let setting of SETTINGS_SCHEMA) {
-		settings_form.appendChild(createToggle(setting[0], setting[1], setting[2]));
+		settings_form.appendChild(createToggle(SETTINGS_KEY(setting[0]), setting[1], setting[2]));
 	}
 
 	let vk_wrapper = document.createElement("div");
@@ -621,7 +640,7 @@ async function startTaskTimer(text, seconds) {
 	let is_fake = text == "Speaking" && seconds == 0;
 	let is_recording = text == "Recording";
 	let is_speaking = text == "Speaking";
-	let sv_cheats_1 = localStorage.getItem("settings_cheats");
+	let sv_cheats_1 = getLocalStorage("settings_cheats");
 
 	// Create task timer wrapper
 	let timer = document.createElement("div");
@@ -695,7 +714,7 @@ async function startTaskTimer(text, seconds) {
 		voiceSpeed.min = MIN_VOICE_SPEED;
 		voiceSpeed.max = 1.0;
 		voiceSpeed.step = 0.01;
-		voiceSpeed.value = localStorage.getItem(VOICE_SPEED_KEY);
+		voiceSpeed.value = getLocalStorage(VOICE_SPEED_KEY);
 
 		voiceSpeed.oninput = () => {
 			localStorage.setItem(VOICE_SPEED_KEY, voiceSpeed.value);
@@ -850,11 +869,11 @@ async function initTTS() {
 }
 
 async function say(text) {
-	let sv_cheats_1 = localStorage.getItem(SETTINGS_KEY("cheats"));
+	let sv_cheats_1 = getLocalStorage(SETTINGS_KEY("cheats"));
 	let text_hash = await sha256(text);
 
 	_tts_audio.src = `audio/${ge_type}_${ge_variant}_${text_hash}.mp3`;
-	_tts_audio.playbackRate = sv_cheats_1 ? localStorage.getItem(VOICE_SPEED_KEY) : 1.0;
+	_tts_audio.playbackRate = sv_cheats_1 ? getLocalStorage(VOICE_SPEED_KEY) : 1.0;
 	_tts_audio.play();
 
 	// Await for audio to finish
