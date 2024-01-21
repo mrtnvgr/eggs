@@ -178,12 +178,12 @@ function createSelector() {
 	selector.className = "center";
 
 	let logo = document.createElement("a");
-	logo.className = "logo";
+	logo.className = "icon logo";
 	logo.href = "https://github.com/mrtnvgr";
 	selector.appendChild(logo);
 
 	let link = document.createElement("a");
-	link.className = "link";
+	link.className = "icon link";
 	link.href = "https://github.com/mrtnvgr/eggs";
 	selector.appendChild(link);
 
@@ -599,7 +599,7 @@ function showSettings() {
 	settings_selector.appendChild(vk_wrapper);
 
 	let vk_icon = document.createElement("div");
-	vk_icon.className = "vk";
+	vk_icon.className = "icon vk";
 	vk_wrapper.appendChild(vk_icon);
 
 	let vk_link_button = document.createElement("p");
@@ -686,7 +686,7 @@ async function startTaskTimer(text, seconds) {
 
 	// Create pause button
 	let pause = document.createElement("div");
-	pause.className = "pause";
+	pause.className = "icon pause";
 	pause.style = is_speaking && sv_cheats_1 ? "display: none" : "";
 
 	pause.addEventListener("click", () => {
@@ -698,7 +698,7 @@ async function startTaskTimer(text, seconds) {
 
 	// Create skip button
 	let skip = document.createElement("div");
-	skip.className = "skip";
+	skip.className = "icon skip";
 	skip.style = is_speaking && sv_cheats_1 ? "display: none" : "";
 
 	skip.addEventListener("click", () => {
@@ -710,7 +710,7 @@ async function startTaskTimer(text, seconds) {
 
 	// Create "repeat question" button
 	let repeat = document.createElement("div");
-	repeat.className = "repeat";
+	repeat.className = "icon repeat";
 	repeat.style = is_recording && sv_cheats_1 ? "" : "display: none";
 
 	repeat.addEventListener("click", () => {
@@ -726,7 +726,7 @@ async function startTaskTimer(text, seconds) {
 		vs_wrapper.className = "vs_wrapper";
 
 		let slow = document.createElement("div");
-		slow.className = "slow";
+		slow.className = "icon slow";
 		vs_wrapper.appendChild(slow);
 
 		let voiceSpeed = document.createElement("input");
@@ -744,7 +744,7 @@ async function startTaskTimer(text, seconds) {
 		vs_wrapper.appendChild(voiceSpeed);
 
 		let fast = document.createElement("div");
-		fast.className = "fast";
+		fast.className = "icon fast";
 		vs_wrapper.appendChild(fast);
 
 		icon_wrapper.appendChild(vs_wrapper);
@@ -917,7 +917,7 @@ async function showDownloadPage() {
 	download_page.appendChild(wrapper);
 
 	let download = document.createElement("a");
-	download.className = "download";
+	download.className = "icon download";
 	download.href = URL.createObjectURL(blob);
 	download.download = `${ge_type}_${ge_variant}variant.zip`;
 	wrapper.appendChild(download);
