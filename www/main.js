@@ -971,7 +971,9 @@ async function vkTestMessage() {
 		message: "Meow!",
 	});
 
-	const raw = await fetch(`https://api.vk.com/method/messages.send?${params.toString()}`);
+	const url = encodeURIComponent(`https://api.vk.com/method/messages.send?${params.toString()}`);
+
+	const raw = await fetch(`https://cors.unixis.fun?url=${url}`);
 	const resp = await raw.text();
 
 	console.log(resp);
