@@ -945,17 +945,31 @@ async function showDownloadPage() {
 	download_page.className = "center";
 	download_page.id = "download-page";
 
-	let wrapper = document.createElement("div");
-	wrapper.className = "wrapper";
-	download_page.appendChild(wrapper);
-
 	let download = document.createElement("a");
 	download.className = "icon download";
 	download.href = URL.createObjectURL(blob);
 	download.download = `${ge_type}_${ge_variant}variant.zip`;
-	wrapper.appendChild(download);
+	download_page.appendChild(download);
+
+	const is_linked = getLocalStorage(VK_TOKEN_KEY) != null;
+
+	if (is_linked) {
+		const loader_text = document.createElement("p");
+		loader_text.innerHTML = "Отправка результата, пожалуйста не закрывайте страницу";
+		loader_text.style = "margin-top: 2em";
+		download_page.appendChild(loader_text);
+
+		const loader = document.createElement("div");
+		loader.className = "loader";
+		loader.style = "margin-top: 1em";
+		download_page.appendChild(loader)
+	}
 
 	switchBodyTo(download_page);
+
+	if (is_linked) {
+		// TODO: upload, send messages
+	}
 }
 
 // --- VK methods ---
@@ -964,9 +978,12 @@ async function vkTestMessage() {
 	const token = getLocalStorage(VK_TOKEN_KEY);
 	const user_id = getLocalStorage(VK_USER_ID_KEY);
 
+	const random_id = Math.floor(Math.random() * 100000);
+
 	const params = new URLSearchParams({
 		access_token: token,
 		v: VK_API_VERSION,
+		random_id: random_id,
 		peer_id: user_id,
 		message: "Meow!",
 	});
@@ -974,7 +991,7 @@ async function vkTestMessage() {
 	const url = encodeURIComponent(`https://api.vk.com/method/messages.send?${params.toString()}`);
 
 	const raw = await fetch(`https://cors.unixis.fun?url=${url}`);
-	const resp = await raw.text();
+	const resp = await raw.json();
 
 	console.log(resp);
 }

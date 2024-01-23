@@ -99,16 +99,7 @@ a.link {
 }
 
 .mm-settings-wrapper:hover .settings {
-  animation: spin-animation 0.5s infinite;
-}
-
-@keyframes spin-animation {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  animation: spin 0.5s infinite;
 }
 
 .vk-linked {
@@ -526,6 +517,24 @@ label.task-name {
 
   /* #cdd6f4 */
   filter: invert(85%) sepia(80%) saturate(534%) hue-rotate(178deg) brightness(100%) contrast(91%);
+}
+
+/* --- Loader --- */
+
+.loader {
+  border: 0.5em solid var(--footer);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  width: 3em;
+  height: 3em;
+  animation: spin 1s linear infinite;
+}
+
+/* --- Animations --- */
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
