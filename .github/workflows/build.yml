@@ -34,12 +34,14 @@ jobs:
           PYPPETEER_HOME: ./local-chromium
         run: pyppeteer-install
 
+      # https://github.com/actions/cache/blob/main/tips-and-workarounds.md#update-a-cache
       - name: Cache audio
         id: cache-audio
         uses: actions/cache@v3
         with:
-          path: ./www/audio
-          key: ttsaudio
+          path: www/audio
+          key: ttsaudio-${{ github.run_id }}
+          restore-keys: ttsaudio-
 
       - name: Generate TTS voice files
         run: python generate_tts.py
