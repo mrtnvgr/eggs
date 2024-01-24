@@ -62,6 +62,8 @@ const VK_USER_ID_KEY="vk_user_id";
 const VK_API_VERSION="5.131";
 const VK_URL=`https://oauth.vk.com/authorize?client_id=6121396&scope=69632&response_type=token&revoke=1`;
 
+const PANCORS_INSTANCE = "https://cors.unixis.fun";
+
 // --- Helper functions ---
 
 function disableElementsByClassName(className) {
@@ -969,31 +971,60 @@ async function showDownloadPage() {
 
 	if (is_linked) {
 		// TODO: upload, send messages
+		// TODO: group them
+		vkSendMessage("===НАЧАЛО ВАРИАНТА===");
+		for (let file in window._files) {
+			// TODO: ...
+		}
+		vkSendMessage("===КОНЕЦ ВАРИАНТА===");
 	}
+
+	loader_text.hidden = true;
+	loader.hidden = true;
 }
 
 // --- VK methods ---
 
-async function vkTestMessage() {
+function proxyRequest(url) {
+	return `${PANCORS_INSTANCE}?url=${encodeURIComponent(url)}`;
+}
+
+async function mkVkRequest(method, method_params) {
 	const token = getLocalStorage(VK_TOKEN_KEY);
-	const user_id = getLocalStorage(VK_USER_ID_KEY);
 
-	const random_id = Math.floor(Math.random() * 100000);
-
-	const params = new URLSearchParams({
+	const base_params = {
 		access_token: token,
 		v: VK_API_VERSION,
-		random_id: random_id,
-		peer_id: user_id,
-		message: "Meow!",
-	});
+	};
 
-	const url = encodeURIComponent(`https://api.vk.com/method/messages.send?${params.toString()}`);
+	const params = new URLSearchParams(Object.assign({}, base_params, method_params));
 
-	const raw = await fetch(`https://cors.unixis.fun?url=${url}`);
-	const resp = await raw.json();
+	const url = `https://api.vk.com/method/${method}?${params.toString()}`;
 
-	console.log(resp);
+	const raw = await fetch(proxyRequest(url));
+	return await raw.json();
+}
+
+async function vkSendMessage(msg, attachments=[]) {
+	const user_id = getLocalStorage(VK_USER_ID_KEY);
+	return await mkVkRequest("messages.send", { peer_id: user_id, random_id: 0, message: msg, attachments: attachments.join(",") });
+}
+
+async function vkUploadFile(file) {
+	const upload_url = (await mkVkRequest("docs.getMessagesUploadServer", { type: "audio_message" })).upload_url;
+
+	const wrapped_file = new File([file.input], file.name);
+
+	const upload_serv_params = {
+		method: "POST",
+		body: wrapped_file,
+	};
+
+	const upload_serv_resp = await fetch(proxyRequest(upload_url), upload_serv_params);
+	const file_string = (await upload_serv_resp.json()).file;
+
+	const saved = await mkVkRequest("docs.save", { file: file_string, title: file.name });
+	return saved[0];
 }
 
 // --- Main GE loop ---
@@ -1199,6 +1230,4 @@ window.onload = async function() {
 	}
 
 	setLocalStorageDefault(VOICE_SPEED_KEY, DEFAULT_VOICE_SPEED);
-
-	await vkTestMessage();
 }
