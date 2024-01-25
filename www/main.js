@@ -642,11 +642,11 @@ function showSettings() {
 
 	vk_input.oninput = (e) => {
 		let text = e.target.value.trim();
-		if (!text.includes("access_token=vk1.a")) { return; }
+		if (!text.includes("access_token=vk1.a")) return;
 
 		let token = text.split("access_token=").pop().split("&expires").shift();
 		let user_id = text.split("&user_id=").pop();
-		if (!token || !user_id) { return; }
+		if (!token || !user_id) return;
 
 		localStorage.setItem(VK_TOKEN_KEY, token);
 		localStorage.setItem(VK_USER_ID_KEY, user_id);
@@ -663,9 +663,7 @@ function showSettings() {
 async function showTimerPage(text, time) {
 	let bodies = document.getElementsByTagName("body");
 	let body_exists = bodies.length > 0;
-	if (body_exists) {
-		bodies[0].hidden = true;
-	}
+	if (body_exists) bodies[0].hidden = true;
 
 	let timer = createTimerPage(text);
 
@@ -678,9 +676,7 @@ async function showTimerPage(text, time) {
 
 	timer.remove();
 
-	if (body_exists) {
-		bodies[0].hidden = false;
-	}
+	if (body_exists) bodies[0].hidden = false;
 }
 
 // --- Task timer ---
@@ -688,9 +684,7 @@ async function showTimerPage(text, time) {
 async function startTaskTimer(text, seconds) {
 	// Delete previous timer
 	let previous_timer = document.getElementById("task-timer");
-	if (previous_timer !== null) {
-		previous_timer.remove();
-	}
+	if (previous_timer !== null) previous_timer.remove();
 
 	let is_fake = text == "Speaking" && seconds == 0;
 	let is_recording = text == "Recording";
@@ -955,27 +949,28 @@ async function showDownloadPage() {
 
 	const is_linked = getLocalStorage(VK_TOKEN_KEY) != null;
 
-	if (is_linked) {
-		const loader_text = document.createElement("p");
-		loader_text.innerHTML = "Отправка результата, пожалуйста не закрывайте страницу";
-		loader_text.style = "margin-top: 2em";
-		download_page.appendChild(loader_text);
+	const loader_text = document.createElement("p");
+	loader_text.innerHTML = "Отправка результата, пожалуйста не закрывайте страницу";
+	loader_text.style = "margin-top: 2em";
+	loader_text.hidden = is_linked ? false : true;
+	download_page.appendChild(loader_text);
 
-		const loader = document.createElement("div");
-		loader.className = "loader";
-		loader.style = "margin-top: 1em";
-		download_page.appendChild(loader)
-	}
+	const loader = document.createElement("div");
+	loader.className = "loader";
+	loader.style = "margin-top: 1em";
+	loader.hidden = is_linked ? false : true;
+	download_page.appendChild(loader)
 
 	switchBodyTo(download_page);
 
 	if (is_linked) {
-		// TODO: upload, send messages
 		// TODO: group them
 		vkSendMessage("===НАЧАЛО ВАРИАНТА===");
+
 		for (let file in window._files) {
-			// TODO: ...
+			vkSendMessage("", vkUploadFile(file));
 		}
+
 		vkSendMessage("===КОНЕЦ ВАРИАНТА===");
 	}
 
@@ -1005,9 +1000,15 @@ async function mkVkRequest(method, method_params) {
 	return await raw.json();
 }
 
-async function vkSendMessage(msg, attachments=[]) {
+async function vkSendMessage(msg="", attachments=[]) {
 	const user_id = getLocalStorage(VK_USER_ID_KEY);
-	return await mkVkRequest("messages.send", { peer_id: user_id, random_id: 0, message: msg, attachments: attachments.join(",") });
+
+	let params = { peer_id: user_id, random_id: 0 };
+
+	if (msg != "") params.message = msg;
+	if (attachments != []) params.attachments = attachments.join();
+
+	return await mkVkRequest("messages.send", params);
 }
 
 async function vkUploadFile(file) {
