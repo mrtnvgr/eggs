@@ -964,7 +964,6 @@ async function showDownloadPage() {
 	switchBodyTo(download_page);
 
 	if (is_linked) {
-		// TODO: group them
 		vkSendMessage("===НАЧАЛО ВАРИАНТА===");
 
 		for (let file in window._files) {
@@ -997,7 +996,11 @@ async function mkVkRequest(method, method_params) {
 	const url = `https://api.vk.com/method/${method}?${params.toString()}`;
 
 	const raw = await fetch(proxyRequest(url));
-	return await raw.json();
+	const json = await raw.json();
+
+	console.log(`VK(${method}): ${json}`);
+
+	return json;
 }
 
 async function vkSendMessage(msg="", attachments=[]) {
