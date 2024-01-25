@@ -21,7 +21,15 @@ jobs:
         run: |
           pip install --progress-bar off pyppeteer requests
 
+      - name: Download previous release
+        id: restore-files
+        run: |
+          wget https://github.com/mrtnvgr/eggs/releases/download/master/built.zip
+          mkdir www/audio
+          unzip built.zip "www/audio/*"
+
       - name: Cache headless chromium
+        if: steps.restore-files.outcome == 'failure'
         id: cache-chromium
         uses: actions/cache@v3
         with:
@@ -29,21 +37,13 @@ jobs:
           key: chromium
 
       - name: Install headless chromium
-        if: steps.cache-chromium.outputs.cache-hit != 'true'
+        if: steps.cache-chromium.outputs.cache-hit != 'true' || steps.restore-files.outcome == 'failure'
         env:
           PYPPETEER_HOME: ./local-chromium
         run: pyppeteer-install
 
-      # https://github.com/actions/cache/blob/main/tips-and-workarounds.md#update-a-cache
-      - name: Cache audio
-        id: cache-audio
-        uses: actions/cache@v3
-        with:
-          path: www/audio
-          key: ttsaudio-${{ github.run_id }}
-          restore-keys: ttsaudio-
-
       - name: Generate TTS voice files
+        if: steps.restore-files.outcome == 'failure'
         run: python generate_tts.py
         env:
           PYPPETEER_HOME: ./local-chromium
