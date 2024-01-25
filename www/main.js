@@ -968,7 +968,7 @@ async function showDownloadPage() {
 		vkSendMessage("===НАЧАЛО ВАРИАНТА===");
 
 		for (let file in window._files) {
-			vkSendMessage("", vkUploadFile(file));
+			vkSendMessage("", [vkUploadFile(file)]);
 		}
 
 		vkSendMessage("===КОНЕЦ ВАРИАНТА===");
