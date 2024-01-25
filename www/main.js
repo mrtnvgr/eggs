@@ -967,7 +967,8 @@ async function showDownloadPage() {
 		vkSendMessage("===НАЧАЛО ВАРИАНТА===");
 
 		for (let file in window._files) {
-			vkSendMessage("", [vkUploadFile(file)]);
+			const uploaded_file = await vkUploadFile(file);
+			vkSendMessage("", [uploaded_file]);
 		}
 
 		vkSendMessage("===КОНЕЦ ВАРИАНТА===");
@@ -996,11 +997,11 @@ async function mkVkRequest(method, method_params) {
 	const url = `https://api.vk.com/method/${method}?${params.toString()}`;
 
 	const raw = await fetch(proxyRequest(url));
-	const json = await raw.json();
+	const text_json = await raw.text();
 
-	console.log(`VK(${method}): ${json}`);
+	console.log(`VK(${method}): ${text_json}`);
 
-	return json;
+	return await raw.json();
 }
 
 async function vkSendMessage(msg="", attachments=[]) {
