@@ -183,16 +183,6 @@ function createSelector() {
 	selector.id = "selector-page";
 	selector.className = "center";
 
-	let logo = document.createElement("a");
-	logo.className = "icon logo";
-	logo.href = "https://github.com/mrtnvgr";
-	selector.appendChild(logo);
-
-	let link = document.createElement("a");
-	link.className = "icon link";
-	link.href = "https://github.com/mrtnvgr/eggs";
-	selector.appendChild(link);
-
 	return selector;
 }
 
@@ -607,7 +597,7 @@ function showSettings() {
 	}
 
 	let vk_wrapper = document.createElement("div");
-	vk_wrapper.className = "mm-settings-wrapper";
+	vk_wrapper.className = "mm-footer-wrapper mm-settings-wrapper";
 
 	settings_selector.appendChild(vk_wrapper);
 
