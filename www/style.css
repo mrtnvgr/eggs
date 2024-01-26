@@ -352,17 +352,22 @@ label.task-name {
 /* For mobile */
 @media (max-width: 768px) {
   .task-image {
-    width: 200px;
-    height: 150px;
+    max-width: 200px;
+    max-height: 150px;
   }
 }
 
 /* For desktop */
 @media (min-width: 768px) {
   .task-image {
-    width: 400px;
-    height: 250px;
+    max-width: 400px;
+    max-height: 250px;
   }
+}
+
+.task-image {
+  width: auto;
+  height: auto;
 }
 
 /* --- Task timer --- */
