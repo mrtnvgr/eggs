@@ -997,11 +997,11 @@ async function mkVkRequest(method, method_params) {
 	const url = `https://api.vk.com/method/${method}?${params.toString()}`;
 
 	const raw = await fetch(proxyRequest(url));
-	const text_json = await raw.text();
+	const json = await raw.json();
 
-	console.log(`VK(${method}): ${text_json}`);
+	console.log(`VK(${method}): ${JSON.stringify(json)}`);
 
-	return await raw.json();
+	return json.response;
 }
 
 async function vkSendMessage(msg="", attachments=[]) {
@@ -1010,7 +1010,7 @@ async function vkSendMessage(msg="", attachments=[]) {
 	let params = { peer_id: user_id, random_id: 0 };
 
 	if (msg != "") params.message = msg;
-	if (attachments != []) params.attachments = attachments.join();
+	if (attachments.length != 0) params.attachments = attachments.join();
 
 	return await mkVkRequest("messages.send", params);
 }
