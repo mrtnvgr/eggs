@@ -220,7 +220,7 @@ function createTaskSelector() {
 
 	let continue_button = document.createElement("button");
 	continue_button.className = "btn continue-btn";
-	continue_button.innerHTML = "Начать";
+	continue_button.innerHTML = "Продолжить";
 	continue_button.addEventListener("click", select_task);
 	btn_wrapper.appendChild(continue_button);
 
@@ -269,9 +269,16 @@ function createCheckbox(id, text, default_state=true, handler=null) {
 function createVariantSelector(count) {
 	let variant_selector = createSelector();
 
+	let form = document.createElement("fieldset");
+	variant_selector.appendChild(form);
+
+	let legend = document.createElement("legend");
+	legend.innerHTML = "Выбор варианта:";
+	form.appendChild(legend);
+
 	let grid = document.createElement("div");
 	grid.className = "var-grid";
-	variant_selector.appendChild(grid);
+	form.appendChild(grid);
 
 	// Add buttons to variant selector
 	for (let i = 1; i <= count; i++) {

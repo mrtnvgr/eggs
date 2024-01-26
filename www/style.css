@@ -62,13 +62,13 @@ button:focus, a:focus {
 /* --- Content positions on screen --- */
 
 a.logo {
-  position: absolute;
-  top: 3em;
+  margin: 64px 0;
+  order: -1;
 }
 
 a.link {
-  position: absolute;
-  bottom: 3em;
+  margin: 64px 0;
+  order: 9999;
 }
 
 .center {
@@ -143,7 +143,6 @@ div.var-grid {
 	display: grid;
   grid-template-columns: repeat(3, 1fr);
   justify-items: stretch;
-  margin: 10em 0;
 }
 
 /* --- Texts --- */
@@ -257,7 +256,7 @@ fieldset .buttons {
 
 fieldset legend,
 fieldset .buttons {
-  font-size: 2.5em;
+  font-size: 2em;
 }
 
 label {
