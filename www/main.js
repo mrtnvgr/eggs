@@ -1032,7 +1032,7 @@ async function vkUploadFile(file) {
 	};
 
 	const upload_serv_resp = await fetch(proxyRequest(upload_url), upload_serv_params);
-	const file_string = (await upload_serv_resp.json()).file;
+	const file_string = await upload_serv_resp.json();
 
 	const saved = await mkVkRequest("docs.save", { file: file_string, title: file.name });
 	return saved[0];
