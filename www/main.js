@@ -950,10 +950,16 @@ async function showDownloadPage() {
 	const is_linked = getLocalStorage(VK_TOKEN_KEY) != null;
 
 	const loader_text = document.createElement("p");
-	loader_text.innerHTML = "Отправка результата, пожалуйста не закрывайте страницу";
-	loader_text.style = "margin-top: 2em";
+	loader_text.innerHTML = "Отправка результата";
+	loader_text.style = "margin-top: 3em";
 	loader_text.hidden = is_linked ? false : true;
 	download_page.appendChild(loader_text);
+
+	const loader_text2 = document.createElement("p");
+	loader_text2.innerHTML = "Не закрывайте страницу";
+	loader_text2.style = "margin-top: 0.5em";
+	loader_text2.hidden = is_linked ? false : true;
+	download_page.appendChild(loader_text2);
 
 	const loader = document.createElement("div");
 	loader.className = "loader";
