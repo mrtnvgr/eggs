@@ -972,16 +972,20 @@ async function showDownloadPage() {
 	if (is_linked) {
 		vkSendMessage("===НАЧАЛО ВАРИАНТА===");
 
-		for (let file in window._files) {
-			const uploaded_file = await vkUploadFile(file);
-			vkSendMessage("", [uploaded_file]);
+		for (let file of window._files) {
+			if (file.name.endsWith(".txt")) {
+				vkSendMessage(file.input);
+			} else if (file.name.endsWith(".mp3")) {
+				vkSendMessage("", [await vkUploadAudio(file)]);
+			}
 		}
 
 		vkSendMessage("===КОНЕЦ ВАРИАНТА===");
 	}
 
-	loader_text.hidden = true;
 	loader.hidden = true;
+	loader_text.hidden = true;
+	loader_text2.hidden = true;
 }
 
 // --- VK methods ---
@@ -1016,26 +1020,30 @@ async function vkSendMessage(msg="", attachments=[]) {
 	let params = { peer_id: user_id, random_id: 0 };
 
 	if (msg != "") params.message = msg;
-	if (attachments.length != 0) params.attachments = attachments.join();
+	if (attachments.length != 0) params.attachment = attachments.join();
 
 	return await mkVkRequest("messages.send", params);
 }
 
-async function vkUploadFile(file) {
+async function vkUploadAudio(file) {
+	// file = { name = "text.txt", input = "Hello, world!" }
+
 	const upload_url = (await mkVkRequest("docs.getMessagesUploadServer", { type: "audio_message" })).upload_url;
 
-	const wrapped_file = new File([file.input], file.name);
+	const wrapped_audio = new File([file.input], file.name);
+	let form = new FormData();
+	form.append("file", wrapped_audio);
 
-	const upload_serv_params = {
-		method: "POST",
-		body: wrapped_file,
-	};
+	const upload_serv_params = { method: "POST", body: form };
 
 	const upload_serv_resp = await fetch(proxyRequest(upload_url), upload_serv_params);
-	const file_string = await upload_serv_resp.json();
+	const file_string = (await upload_serv_resp.json()).file;
 
-	const saved = await mkVkRequest("docs.save", { file: file_string, title: file.name });
-	return saved[0];
+	const saved = await mkVkRequest("docs.save", { file: file_string });
+
+	const type = saved.type;
+	const audio = saved[type];
+	return `${type}${audio.owner_id}_${audio.id}`;
 }
 
 // --- Main GE loop ---
