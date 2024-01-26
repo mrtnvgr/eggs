@@ -22,6 +22,7 @@ jobs:
           pip install --progress-bar off pyppeteer requests
 
       - name: Download previous release
+        continue-on-error: true
         id: restore-files
         run: |
           wget https://github.com/mrtnvgr/eggs/releases/download/master/built.zip
