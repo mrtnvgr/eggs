@@ -21,7 +21,7 @@ def OGE_2_HELLO(x, y):
 OGE_2_GOODBYE = "That is the end of the survey. Thank you very much for your cooperation."
 
 
-EGE_3_HELLO = lambda x, y: f"Hello everyone! It's the {x}. Our new guest today is a teenager from Russia and we are going to discuss {y}. We'd like to know out guest's point of view on this issue. Please answer five questions. So, let's get started."
+EGE_3_HELLO = lambda y: f"Hello everyone! It's the \"Teenagers Round the World\" Channel. Our new guest today is a teenager from Russia and we are going to discuss {y}. We'd like to know out guest's point of view on this issue. Please answer five questions. So, let's get started."
 EGE_3_GOODBYE = "Thank you very much for your interview."
 
 
@@ -68,11 +68,13 @@ async def generate_surveys(page, ge_type, surveys):
         text = open(text_path).read()
         sentences = [x for x in text.split("\n") if x]
 
-        theme = sentences.pop(0)
-        goal = sentences.pop(0)
-
-        task_hello = OGE_2_HELLO if ge_type == "oge" else EGE_3_HELLO
-        sentences.append(task_hello(theme, goal))
+        if ge_type == "oge":
+            theme = sentences.pop(0)
+            goal = sentences.pop(0)
+            sentences.append(OGE_2_HELLO(theme, goal))
+        else:
+            theme = sentences.pop(0)
+            sentences.append(EGE_3_HELLO(theme))
 
         task_goodbye = OGE_2_GOODBYE if ge_type == "oge" else EGE_3_GOODBYE
         sentences.append(task_goodbye)
