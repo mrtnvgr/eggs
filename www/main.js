@@ -967,17 +967,17 @@ async function showDownloadPage() {
 	switchBodyTo(download_page);
 
 	if (is_linked) {
-		vkSendMessage("===НАЧАЛО ВАРИАНТА===");
+		await vkSendMessage("===НАЧАЛО ВАРИАНТА===");
 
 		for (let file of window._files) {
 			if (file.name.endsWith(".txt")) {
-				vkSendMessage(file.input);
+				await vkSendMessage(file.input);
 			} else if (file.name.endsWith(".mp3")) {
-				vkSendMessage("", [await vkUploadAudio(file)]);
+				await vkSendMessage("", [await vkUploadAudio(file)]);
 			}
 		}
 
-		vkSendMessage("===КОНЕЦ ВАРИАНТА===");
+		await vkSendMessage("===КОНЕЦ ВАРИАНТА===");
 	}
 
 	loader.hidden = true;
