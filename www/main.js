@@ -128,15 +128,12 @@ function setLocalStorageDefault(key, value) {
 function getLocalStorage(key) {
 	let value = localStorage.getItem(key);
 
-	let is_int = !isNaN(parseInt(value));
 	let is_float = !isNaN(parseFloat(value));
 
 	if (value == "true") {
 		return true;
 	} else if (value == "false") {
 		return false;
-	} else if (is_int) {
-		return parseInt(value);
 	} else if (is_float) {
 		return parseFloat(value);
 	} else {
@@ -920,6 +917,7 @@ async function say(text) {
 
 	_tts_audio.src = `audio/${ge_type}_${ge_variant}_${text_hash}.mp3`;
 	_tts_audio.playbackRate = sv_cheats_1 ? getLocalStorage(VOICE_SPEED_KEY) : 1.0;
+	console.log(_tts_audio.playbackRate);
 	_tts_audio.play();
 
 	// Await for audio to finish
@@ -1130,12 +1128,13 @@ async function start_survey_task() {
 		let theme = sentences.shift();
 		let goal = sentences.shift();
 
+		// note: tts will be awaited in task timer
 		say(OGE_2_HELLO(theme, goal));
 	} else {
+		// note: tts will be awaited in task timer
 		say(EGE_3_HELLO(sentences.shift()));
 	}
 
-	// note: tts will be awaited in task timer
 	await startTaskTimer("Speaking", 0);
 
 	for (let sentence of sentences) {
