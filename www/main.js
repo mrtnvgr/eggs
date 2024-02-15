@@ -50,8 +50,9 @@ const MIN_VOICE_SPEED = 0.5;
 
 
 const SETTINGS_SCHEMA = [
-	// Name, Storage key, Default value
-	["cheats", "Читы", true]
+	// | Storage key | Name                 | Default value |
+	[    "cheats",     "Читы",                true          ],
+	[    "cd",         "Таймер",              true          ],
 ];
 const SETTINGS_KEY = (x) => `settings_${x}`;
 
@@ -683,7 +684,9 @@ async function startTaskTimer(text, seconds) {
 	let is_fake = text == "Speaking" && seconds == 0;
 	let is_recording = text == "Recording";
 	let is_speaking = text == "Speaking";
-	let sv_cheats_1 = getLocalStorage("settings_cheats");
+
+	let sv_cheats_1 = getLocalStorage(SETTINGS_KEY("cheats"));
+	let show_countdown = getLocalStorage(SETTINGS_KEY("cd"));
 
 	// Create task timer wrapper
 	let timer = document.createElement("div");
@@ -693,7 +696,7 @@ async function startTaskTimer(text, seconds) {
 	let count = document.createElement("p");
 	count.className = "tt-countdown";
 	count.innerHTML = seconds.toMMSS();
-	count.style = is_fake ? "display: none": "";
+	count.style = is_fake || !show_countdown ? "display: none" : "";
 	timer.appendChild(count);
 
 	// Create title
@@ -917,7 +920,6 @@ async function say(text) {
 
 	_tts_audio.src = `audio/${ge_type}_${ge_variant}_${text_hash}.mp3`;
 	_tts_audio.playbackRate = sv_cheats_1 ? getLocalStorage(VOICE_SPEED_KEY) : 1.0;
-	console.log(_tts_audio.playbackRate);
 	_tts_audio.play();
 
 	// Await for audio to finish

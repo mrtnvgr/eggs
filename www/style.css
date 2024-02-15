@@ -100,10 +100,6 @@ button:focus, a:focus {
   animation: spin 0.5s infinite;
 }
 
-.mm-settings-wrapper p {
-  width: 26px;
-}
-
 .vk-linked {
   color: var(--red);
 }
@@ -237,8 +233,7 @@ fieldset {
   border: 2px solid var(--fg);
   row-gap: 1em;
 
-  padding-top: 2em !important;
-  padding-bottom: 2em !important;
+  padding: 2em !important;
 }
 
 fieldset legend {
@@ -249,10 +244,11 @@ fieldset legend {
 fieldset div {
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: space-between;
 }
 
 fieldset .buttons {
+  justify-content: center;
   margin-top: 1em;
 }
 
