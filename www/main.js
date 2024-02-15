@@ -44,19 +44,25 @@ const EGE_4_FOOTER = "You will speak for not more than 3 minutes (12-15 sentence
 const EGE_4_IMG_COUNT = 2;
 
 
+// Toggles
+const _TOGGLE_KEY = (x) => `settings_${x}`;
+const CHEATS_KEY = _TOGGLE_KEY("cheats");
+const COUNTDOWN_KEY = _TOGGLE_KEY("cd");
+
+const TOGGLES_SCHEMA = [
+	// | Storage key   | Name                 | Default value |
+	[    CHEATS_KEY,     "Читы",                true          ],
+	[    COUNTDOWN_KEY,  "Таймер",              true          ],
+];
+
+
+// Settings with custom values
 const VOICE_SPEED_KEY = "voice_speed";
 const DEFAULT_VOICE_SPEED = 0.9;
 const MIN_VOICE_SPEED = 0.5;
 
 
-const SETTINGS_SCHEMA = [
-	// | Storage key | Name                 | Default value |
-	[    "cheats",     "Читы",                true          ],
-	[    "cd",         "Таймер",              true          ],
-];
-const SETTINGS_KEY = (x) => `settings_${x}`;
-
-
+// VK Constants
 const VK_TOKEN_KEY="vk_token";
 const VK_USER_ID_KEY="vk_user_id";
 
@@ -590,7 +596,7 @@ function showSettings() {
 		});
 	};
 
-	for (let setting of SETTINGS_SCHEMA) {
+	for (let setting of TOGGLES_SCHEMA) {
 		settings_form.appendChild(createToggle(SETTINGS_KEY(setting[0]), setting[1], setting[2]));
 	}
 
@@ -685,8 +691,8 @@ async function startTaskTimer(text, seconds) {
 	let is_recording = text == "Recording";
 	let is_speaking = text == "Speaking";
 
-	let sv_cheats_1 = getLocalStorage(SETTINGS_KEY("cheats"));
-	let show_countdown = getLocalStorage(SETTINGS_KEY("cd"));
+	let sv_cheats_1 = getLocalStorage(CHEATS_KEY);
+	let show_countdown = getLocalStorage(COUNTDOWN_KEY);
 
 	// Create task timer wrapper
 	let timer = document.createElement("div");
@@ -915,7 +921,7 @@ async function initTTS() {
 }
 
 async function say(text) {
-	let sv_cheats_1 = getLocalStorage(SETTINGS_KEY("cheats"));
+	let sv_cheats_1 = getLocalStorage(CHEATS_KEY);
 	let text_hash = await sha256(text);
 
 	_tts_audio.src = `audio/${ge_type}_${ge_variant}_${text_hash}.mp3`;
@@ -1242,8 +1248,8 @@ window.onload = async function() {
 
 	document.getElementById("settings").addEventListener("click", showSettings);
 
-	for (let setting of SETTINGS_SCHEMA) {
-		setLocalStorageDefault(SETTINGS_KEY(setting[0]), setting[2]);
+	for (let toggle of TOGGLES_SCHEMA) {
+		setLocalStorageDefault(_TOGGLE_KEY(toggle[0]), toggle[2]);
 	}
 
 	setLocalStorageDefault(VOICE_SPEED_KEY, DEFAULT_VOICE_SPEED);
