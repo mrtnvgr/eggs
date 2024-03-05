@@ -719,10 +719,11 @@ async function startTaskTimer(text, seconds) {
 	// Create pause button
 	let pause = document.createElement("div");
 	pause.className = "icon pause";
-	pause.style = is_speaking && sv_cheats_1 ? "display: none" : "";
+	pause.style = sv_cheats_1 ? "" : "display: none";
 
 	pause.addEventListener("click", () => {
 		togglePauseRecording();
+		togglePauseTTS();
 		pause.classList.toggle("paused");
 	});
 
@@ -731,10 +732,11 @@ async function startTaskTimer(text, seconds) {
 	// Create skip button
 	let skip = document.createElement("div");
 	skip.className = "icon skip";
-	skip.style = is_speaking && sv_cheats_1 ? "display: none" : "";
+	skip.style = sv_cheats_1 ? "" : "display: none";
 
 	skip.addEventListener("click", () => {
 		skip.disable = true;
+		stopTTS();
 		skip.classList.toggle("skipped");
 	});
 
@@ -918,6 +920,20 @@ async function initTTS() {
 		_tts_audio.pause();
 		_tts_audio.muted = false;
 	});
+}
+
+async function stopTTS() {
+	_tts_audio.src = "silence.mp3";
+	_tts_audio.play();
+
+	// Await for audio to finish
+	await new Promise((resolve) => {
+		_tts_audio.addEventListener("ended", resolve);
+	})
+}
+
+function togglePauseTTS() {
+	return _tts_audio.paused ? _tts_audio.play() : _tts_audio.pause();
 }
 
 async function say(text) {
