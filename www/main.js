@@ -597,7 +597,7 @@ function showSettings() {
 	};
 
 	for (let setting of TOGGLES_SCHEMA) {
-		settings_form.appendChild(createToggle(SETTINGS_KEY(setting[0]), setting[1], setting[2]));
+		settings_form.appendChild(createToggle(setting[0], setting[1], setting[2]));
 	}
 
 	let vk_wrapper = document.createElement("div");
@@ -1249,7 +1249,7 @@ window.onload = async function() {
 	document.getElementById("settings").addEventListener("click", showSettings);
 
 	for (let toggle of TOGGLES_SCHEMA) {
-		setLocalStorageDefault(_TOGGLE_KEY(toggle[0]), toggle[2]);
+		setLocalStorageDefault(toggle[0], toggle[2]);
 	}
 
 	setLocalStorageDefault(VOICE_SPEED_KEY, DEFAULT_VOICE_SPEED);
