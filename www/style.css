@@ -250,7 +250,7 @@ fieldset div {
 
 fieldset .buttons {
   justify-content: center;
-  margin-top: 1em;
+  margin-top: 0.5em;
 }
 
 fieldset legend,
