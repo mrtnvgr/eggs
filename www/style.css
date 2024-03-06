@@ -196,7 +196,7 @@ p {
 }
 
 .icon-wrapper {
-  order: 3;
+  order: 4;
 }
 
 .vs_wrapper {
@@ -223,7 +223,8 @@ input[type="text"]:focus {
 
 input[type="range"] {
   accent-color: var(--primary);
-  max-width: 250px;
+  max-width: 100px;
+  order: 3;
 }
 
 fieldset {
