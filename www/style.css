@@ -224,7 +224,6 @@ input[type="text"]:focus {
 input[type="range"] {
   accent-color: var(--primary);
   max-width: 100px;
-  order: 3;
 }
 
 fieldset {

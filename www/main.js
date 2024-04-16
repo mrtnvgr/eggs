@@ -781,7 +781,7 @@ async function startTaskTimer(text, seconds) {
 		fast.className = "icon fast";
 		vs_wrapper.appendChild(fast);
 
-		wrapper.appendChild(vs_wrapper);
+		timer.appendChild(vs_wrapper);
 	}
 
 	// Add timer to task page wrapper
