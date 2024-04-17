@@ -745,7 +745,7 @@ async function startTaskTimer(text, seconds) {
 	// Create "repeat question" button
 	let repeat = document.createElement("div");
 	repeat.className = "icon repeat";
-	repeat.style = is_recording && sv_cheats_1 ? "" : "display: none";
+	repeat.style = is_recording && typeof window._current_tts_sentence !== "undefined" && sv_cheats_1 ? "" : "display: none";
 
 	repeat.addEventListener("click", () => {
 		repeat.disable = true;
