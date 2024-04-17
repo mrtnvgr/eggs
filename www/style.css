@@ -67,6 +67,7 @@ button:focus, a:focus {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  margin: 2em 0;
 }
 
 /* --- Settings --- */
