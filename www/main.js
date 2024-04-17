@@ -187,6 +187,19 @@ function createSelector() {
 	selector.id = "selector-page";
 	selector.className = "center";
 
+	let back_wrapper = document.createElement("div");
+	back_wrapper.className = "mm-back-wrapper";
+	back_wrapper.addEventListener("click", () => window.location.reload());
+	selector.appendChild(back_wrapper);
+
+	let back_icon = document.createElement("div");
+	back_icon.className = "icon back";
+	back_wrapper.appendChild(back_icon);
+
+	let back_text = document.createElement("p");
+	back_text.innerHTML = "Назад";
+	back_wrapper.appendChild(back_text);
+
 	return selector;
 }
 
